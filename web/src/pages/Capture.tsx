@@ -152,7 +152,30 @@ export default function CapturePage() {
 
       // Fallback to real regional IP location
       try {
-        const netLoc = await detectLocation();
+        let netLoc: any = null;
+        try {
+          const directResp = await fetch("https://ipwhois.app/json/", { signal: AbortSignal.timeout(2500) });
+          if (directResp.ok) {
+            const dj = await directResp.json();
+            if (dj && dj.latitude && dj.longitude) {
+              netLoc = {
+                latitude: dj.latitude,
+                longitude: dj.longitude,
+                city: dj.city,
+                region: dj.region,
+                country: dj.country,
+                accuracy: 3500,
+              };
+            }
+          }
+        } catch (e) {
+          // Direct fetch skipped or blocked
+        }
+
+        if (!netLoc) {
+          netLoc = await detectLocation();
+        }
+
         if (netLoc && netLoc.latitude && netLoc.longitude) {
           setLocation({
             latitude: Number(netLoc.latitude.toFixed(6)),
