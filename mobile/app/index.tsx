@@ -56,7 +56,7 @@ export default function OperatorPickerScreen() {
           <View style={styles.badgeShield}>
             <Ionicons name="shield-checkmark" size={36} color={Colors.primary} />
           </View>
-          <Text style={styles.appTitle}>Field Drug Test Companion</Text>
+          <Text style={styles.appTitle}>Nirikshan</Text>
           <Text style={styles.appSubtitle}>
             Forensic Intelligence & Presumptive Seizure Registry
           </Text>

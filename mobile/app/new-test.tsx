@@ -88,6 +88,18 @@ export default function NewTestScreen() {
 
   const selectedKitObj = kits.find((k) => k.id === selectedKit);
 
+  const getReagentClassTitle = (kitName: string) => {
+    const lower = kitName.toLowerCase();
+    if (lower.includes("marquis")) return "Opioid / Phenethylamine Class (Marquis)";
+    if (lower.includes("scott")) return "Tropane Alkaloid Class (Scott Reagent)";
+    if (lower.includes("duquenois")) return "Cannabinoid Class (Duquenois-Levine)";
+    if (lower.includes("ehrlich")) return "Indole Alkaloid Class (Ehrlich)";
+    if (lower.includes("simon")) return "Secondary Amine Class (Simon's)";
+    if (lower.includes("froehde")) return "Alkaloid Class (Froehde)";
+    if (lower.includes("mecke")) return "Opioid Class (Mecke)";
+    return kitName;
+  };
+
   return (
     <ScrollView
       style={styles.container}
@@ -109,7 +121,7 @@ export default function NewTestScreen() {
             <View style={styles.badgeRow}>
               <Ionicons name="shield" size={12} color={Colors.primary} />
               <Text style={styles.badgeText}>Badge: {operator?.badge_id || "OFF-001"}</Text>
-              <View style={styles.dot} />
+              <Text style={styles.badgeText}> | </Text>
               <Text style={styles.statusLive}>ONLINE</Text>
             </View>
           </View>
@@ -181,7 +193,7 @@ export default function NewTestScreen() {
               </View>
               <View style={styles.kitHeader}>
                 <Text style={[styles.kitName, isSelected && styles.kitNameSelected]}>
-                  {kit.name}
+                  {getReagentClassTitle(kit.name)}
                 </Text>
                 <Text style={styles.kitIdTag}>ID: {kit.id.toUpperCase()}</Text>
               </View>

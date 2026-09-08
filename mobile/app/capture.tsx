@@ -117,6 +117,8 @@ export default function CaptureScreen() {
         latitude: String(location.latitude),
         longitude: String(location.longitude),
         accuracy: location.accuracy != null ? String(location.accuracy) : "",
+        locationSource: location.source || "network_ip_approximate",
+        locationVerified: location.verified ? "true" : "false",
         capturedAt: new Date().toISOString(),
       },
     });

@@ -22,8 +22,8 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(
-    title="Field Drug Test Companion API",
-    description="Digital companion for colorimetric field drug testing",
+    title="Nirikshan API",
+    description="Digital Forensic Companion for Colorimetric Field Drug Testing",
     version="1.0.0",
     lifespan=lifespan,
 )

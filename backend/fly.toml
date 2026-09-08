@@ -1,5 +1,5 @@
-# fly.toml app configuration file for fieldtest-backend
-app = "fieldtest-backend"
+# fly.toml app configuration file for nirikshan-backend
+app = "nirikshan-backend"
 primary_region = "bom"
 
 [build]
@@ -8,7 +8,7 @@ primary_region = "bom"
 [env]
   PORT = "8000"
   CORS_ORIGINS = "*"
-  DATABASE_URL = "sqlite:////app/data/fieldtest.db"
+  DATABASE_URL = "sqlite:////app/data/nirikshan.db"
   UPLOAD_DIR = "/app/data/uploads"
 
 [http_service]
@@ -24,5 +24,5 @@ primary_region = "bom"
   memory = "512mb"
 
 [mounts]
-  source = "fieldtest_data"
+  source = "nirikshan_data"
   destination = "/app/data"

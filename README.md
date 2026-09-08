@@ -1,4 +1,4 @@
-# Field Drug Test Companion
+# Nirikshan (निरीक्षण) — Field Drug Test Companion
 
 Digital companion for colorimetric field drug testing. Captures test result images with reference-card calibration, classifies outcomes automatically, and generates tamper-evident digital records.
 

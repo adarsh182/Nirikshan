@@ -39,7 +39,7 @@ export default function LoginPage() {
             </svg>
           </div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">
-            Field Drug Test Companion
+            Nirikshan
           </h1>
           <p className="text-xs text-slate-400 mt-1 font-mono text-emerald-400">
             Forensic Intelligence & Presumptive Seizure Registry

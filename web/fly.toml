@@ -1,5 +1,5 @@
-# fly.toml app configuration file for fieldtest-web
-app = "fieldtest-web"
+# fly.toml app configuration file for nirikshan-web
+app = "nirikshan-web"
 primary_region = "bom"
 
 [build]

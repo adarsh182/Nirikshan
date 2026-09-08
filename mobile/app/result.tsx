@@ -31,6 +31,8 @@ export default function ResultScreen() {
     latitude?: string;
     longitude?: string;
     accuracy?: string;
+    locationSource?: string;
+    locationVerified?: string;
     capturedAt?: string;
   }>();
 
@@ -65,6 +67,8 @@ export default function ResultScreen() {
           latitude: parseFloat(params.latitude),
           longitude: parseFloat(params.longitude),
           accuracy: params.accuracy ? parseFloat(params.accuracy) : null,
+          source: (params.locationSource as any) || "network_ip_approximate",
+          verified: params.locationVerified === "true",
         },
         { deviceCapturedAt: params.capturedAt },
       )
@@ -198,6 +202,11 @@ export default function ResultScreen() {
           value={`${record.latitude.toFixed(5)}°, ${record.longitude.toFixed(5)}°${
             record.location_accuracy_m ? ` (±${record.location_accuracy_m.toFixed(0)}m)` : ""
           }`}
+        />
+        <MetaRow
+          label="Location Integrity"
+          value={record.location_verified ? "Hardware GPS (Verified)" : "Approximate Fix (Unverified)"}
+          valueColor={record.location_verified ? Colors.primaryLight : Colors.inconclusive}
         />
         <MetaRow
           label="Reference Card"

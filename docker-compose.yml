@@ -5,14 +5,14 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: fieldtest-backend
+    container_name: nirikshan-backend
     restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=sqlite:////app/data/fieldtest.db
-      - JWT_SECRET=production-fieldtest-jwt-secret-replace-in-env
-      - SIGNING_SECRET=production-fieldtest-hmac-secret-replace-in-env
+      - DATABASE_URL=sqlite:////app/data/nirikshan.db
+      - JWT_SECRET=production-nirikshan-jwt-secret-replace-in-env
+      - SIGNING_SECRET=production-nirikshan-hmac-secret-replace-in-env
       - UPLOAD_DIR=/app/data/uploads
       - CORS_ORIGINS=*
     volumes:
@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
       args:
         - VITE_API_URL=http://localhost:8000
-    container_name: fieldtest-web
+    container_name: nirikshan-web
     restart: unless-stopped
     ports:
       - "5173:80"

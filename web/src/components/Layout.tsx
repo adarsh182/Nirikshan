@@ -27,10 +27,10 @@ export default function Layout() {
               </div>
               <div>
                 <span className="text-sm font-bold text-slate-100 block">
-                  Field Drug Test Companion
+                  Nirikshan
                 </span>
                 <span className="text-[10px] text-emerald-400 font-mono block">
-                  Narcotics Intelligence & Evidence
+                  Forensic Colorimetric Companion
                 </span>
               </div>
             </Link>
@@ -126,7 +126,7 @@ export default function Layout() {
       <footer className="border-t border-slate-800 bg-slate-900/60 py-4 px-4 text-center text-xs text-slate-400 print:hidden">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <p>
-            Field Drug Test Companion | Forensic Colorimetric Companion
+            Nirikshan | Forensic Colorimetric Companion
           </p>
           <p className="text-[11px] text-slate-400 font-medium">
             Presumptive screening result — confirmatory laboratory analysis required

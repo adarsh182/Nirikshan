@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Field Test Companion",
-    "slug": "fieldtest-companion",
+    "name": "Nirikshan",
+    "slug": "nirikshan",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "fieldtest",
+    "scheme": "nirikshan",
     "userInterfaceStyle": "dark",
     "splash": {
       "backgroundColor": "#0f172a"
@@ -13,12 +13,14 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "Capture field drug test results",
-        "NSLocationWhenInUseUsageDescription": "Record GPS location of field tests"
+        "NSCameraUsageDescription": "Capture field drug test results for forensic screening",
+        "NSLocationWhenInUseUsageDescription": "Record GPS location of presumptive field tests"
       }
     },
     "android": {
+      "package": "com.nirikshan.companion",
       "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0f172a"
       },
       "permissions": [
@@ -32,16 +34,17 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow Field Test Companion to capture test result images."
+          "cameraPermission": "Allow Nirikshan to capture test result images."
         }
       ],
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Allow Field Test Companion to record test location."
+          "locationWhenInUsePermission": "Allow Nirikshan to record test coordinates."
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      "expo-font"
     ]
   }
 }
