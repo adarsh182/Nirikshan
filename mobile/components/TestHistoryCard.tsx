@@ -7,9 +7,10 @@ import type { TestRecord } from "../types";
 interface TestHistoryCardProps {
   test: TestRecord;
   onPress: () => void;
+  onDelete?: () => void;
 }
 
-export default function TestHistoryCard({ test, onPress }: TestHistoryCardProps) {
+export default function TestHistoryCard({ test, onPress, onDelete }: TestHistoryCardProps) {
   const isPositive = test.result === "positive";
   const isNegative = test.result === "negative";
 
@@ -60,16 +61,30 @@ export default function TestHistoryCard({ test, onPress }: TestHistoryCardProps)
           <Text style={styles.date}>{dateStr}</Text>
         </View>
 
-        <View
-          style={[
-            styles.badge,
-            { backgroundColor: badge.bg, borderColor: badge.border },
-          ]}
-        >
-          <Ionicons name={badge.icon} size={13} color={badge.text} />
-          <Text style={[styles.badgeText, { color: badge.text }]}>
-            {test.result.toUpperCase()}
-          </Text>
+        <View style={styles.badgeContainer}>
+          <View
+            style={[
+              styles.badge,
+              { backgroundColor: badge.bg, borderColor: badge.border },
+            ]}
+          >
+            <Ionicons name={badge.icon} size={13} color={badge.text} />
+            <Text style={[styles.badgeText, { color: badge.text }]}>
+              {test.result.toUpperCase()}
+            </Text>
+          </View>
+          {onDelete && (
+            <TouchableOpacity
+              onPress={(e) => {
+                e.stopPropagation?.();
+                onDelete();
+              }}
+              style={styles.deleteBtn}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Ionicons name="trash-outline" size={15} color="#ef4444" />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
@@ -128,6 +143,11 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     marginTop: 2,
   },
+  badgeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
   badge: {
     flexDirection: "row",
     alignItems: "center",
@@ -141,6 +161,13 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.5,
+  },
+  deleteBtn: {
+    padding: 6,
+    borderRadius: Radius.sm,
+    backgroundColor: "rgba(239, 68, 68, 0.12)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   bottomRow: {
     flexDirection: "row",

@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Alert,
   Share,
+  Linking,
 } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,6 +19,7 @@ import {
   submitTest,
   getTestDetail,
   verifyTest,
+  deleteTest,
   API_BASE,
 } from "../services/api";
 import { Colors, Radius, Spacing } from "../constants/theme";
@@ -140,6 +142,34 @@ export default function ResultScreen() {
     }
   };
 
+  const handleDeleteRecord = () => {
+    if (!record) return;
+    Alert.alert(
+      "Permanently Delete Evidence?",
+      `Are you sure you want to delete dossier #${record.id.slice(0, 8)}? This will permanently purge the photographic evidence file and cryptographic chain-of-custody signatures.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete Permanently",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteTest(record.id);
+              Alert.alert("Record Deleted", "Evidence dossier has been permanently purged.", [
+                {
+                  text: "OK",
+                  onPress: () => router.replace("/(tabs)/history"),
+                },
+              ]);
+            } catch (e: any) {
+              Alert.alert("Deletion Failed", e?.message || "Could not delete evidence record.");
+            }
+          },
+        },
+      ]
+    );
+  };
+
   if (loading) {
     return (
       <View style={styles.center}>
@@ -203,6 +233,19 @@ export default function ResultScreen() {
             record.location_accuracy_m ? ` (±${record.location_accuracy_m.toFixed(0)}m)` : ""
           }`}
         />
+        <TouchableOpacity
+          style={styles.mapBtn}
+          onPress={() => {
+            Linking.openURL(
+              `https://www.google.com/maps?q=${record.latitude},${record.longitude}&z=17`
+            );
+          }}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="map-outline" size={13} color={Colors.primary} />
+          <Text style={styles.mapBtnText}>Open Pinned GPS in Google Maps</Text>
+          <Ionicons name="open-outline" size={12} color={Colors.primary} />
+        </TouchableOpacity>
         <MetaRow
           label="Location Integrity"
           value={record.location_verified ? "Hardware GPS (Verified)" : "Approximate Fix (Unverified)"}
@@ -315,6 +358,15 @@ export default function ResultScreen() {
           <Text style={styles.newTestBtnText}>New Field Test</Text>
         </TouchableOpacity>
       </View>
+
+      <TouchableOpacity
+        style={styles.deleteRecordBtn}
+        onPress={handleDeleteRecord}
+        activeOpacity={0.7}
+      >
+        <Ionicons name="trash-outline" size={16} color="#ef4444" />
+        <Text style={styles.deleteRecordBtnText}>Permanently Delete Evidence Record</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -588,6 +640,43 @@ const styles = StyleSheet.create({
   newTestBtnText: {
     color: "#ffffff",
     fontSize: 15,
+    fontWeight: "700",
+  },
+  mapBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "rgba(16, 185, 129, 0.08)",
+    borderColor: "rgba(16, 185, 129, 0.25)",
+    borderWidth: 1,
+    borderRadius: Radius.sm,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    marginTop: 2,
+    marginBottom: 8,
+    alignSelf: "flex-start",
+  },
+  mapBtnText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: Colors.primary,
+  },
+  deleteRecordBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: "rgba(239, 68, 68, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(239, 68, 68, 0.25)",
+    borderRadius: Radius.md,
+    paddingVertical: 12,
+    marginTop: Spacing.md,
+    marginBottom: Spacing.xl,
+  },
+  deleteRecordBtnText: {
+    color: "#ef4444",
+    fontSize: 13,
     fontWeight: "700",
   },
 });

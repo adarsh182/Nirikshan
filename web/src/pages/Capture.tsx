@@ -15,15 +15,28 @@ interface LocationState {
   verified: boolean;
 }
 
-const INITIAL_COORDS: LocationState = {
-  latitude: 28.6139,
-  longitude: 77.209,
-  accuracy: 3500,
-  city: "New Delhi",
-  region: "Delhi",
-  source: "network_ip_approximate",
-  verified: false,
-};
+function getInitialLocation(): LocationState {
+  try {
+    const saved = localStorage.getItem("nirikshan_last_location");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed.latitude === "number" && typeof parsed.longitude === "number") {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    // Ignore JSON parse errors
+  }
+  return {
+    latitude: 19.0760,
+    longitude: 72.8777,
+    accuracy: 3500,
+    city: "Mumbai",
+    region: "Maharashtra",
+    source: "network_ip_approximate",
+    verified: false,
+  };
+}
 
 export default function CapturePage() {
   const navigate = useNavigate();
@@ -52,11 +65,22 @@ export default function CapturePage() {
   const [isDragging, setIsDragging] = useState(false);
 
   // Location & Metadata
-  const [location, setLocation] = useState<LocationState>(INITIAL_COORDS);
+  const [location, setLocation] = useState<LocationState>(getInitialLocation);
   const [locating, setLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
   const [capturedAt, setCapturedAt] = useState<string>("");
+
+  // Persist last known location across sessions
+  useEffect(() => {
+    if (location.latitude && location.longitude) {
+      try {
+        localStorage.setItem("nirikshan_last_location", JSON.stringify(location));
+      } catch (e) {
+        // Storage unavailable
+      }
+    }
+  }, [location]);
 
   // Submission state
   const [submitting, setSubmitting] = useState(false);
@@ -558,9 +582,20 @@ export default function CapturePage() {
               <p className="text-xs text-slate-300">
                 Attributed Officer: <span className="font-mono text-slate-100">{submitResult.operator_badge_id || "OFF-001"}</span>
               </p>
-              <p className="text-xs text-slate-300">
-                Coordinates: <span className="font-mono text-slate-100">{submitResult.latitude.toFixed(4)}°, {submitResult.longitude.toFixed(4)}°</span>
-              </p>
+              <div className="flex items-center justify-between text-xs text-slate-300">
+                <p>
+                  Coordinates: <span className="font-mono text-slate-100">{submitResult.latitude.toFixed(4)}°, {submitResult.longitude.toFixed(4)}°</span>
+                </p>
+                <a
+                  href={`https://www.google.com/maps?q=${submitResult.latitude},${submitResult.longitude}&z=17`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-1"
+                  title="Open GPS Pin in Google Maps"
+                >
+                  <span>📍 Map Pin</span>
+                </a>
+              </div>
               <div className="pt-1">
                 <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-mono font-semibold ${
                   submitResult.location_verified
@@ -784,10 +819,11 @@ export default function CapturePage() {
                     {location.city ? `${location.city}, ${location.region || ""}` : "Coordinates recorded"}
                   </span>
                   <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`}
+                    href={`https://www.google.com/maps?q=${location.latitude},${location.longitude}&z=17`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-800 font-bold hover:underline transition"
+                    title="Open Pinned GPS in Google Maps"
                   >
                     <span>View Map Pin</span>
                   </a>

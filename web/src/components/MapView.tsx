@@ -9,8 +9,8 @@ interface LocationCardProps {
   className?: string;
 }
 
-function openGoogleMaps(lat: number, lon: number) {
-  window.open(`https://www.google.com/maps?q=${lat},${lon}&z=16`, "_blank");
+export function openGoogleMaps(lat: number, lon: number) {
+  window.open(`https://www.google.com/maps?q=${lat},${lon}&z=17`, "_blank");
 }
 
 export default function LocationCard({

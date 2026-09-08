@@ -376,3 +376,26 @@ def get_test_image(
         raise HTTPException(status_code=404, detail="Image not found")
     media = "image/jpeg" if record.image_path.endswith((".jpg", ".jpeg")) else "image/png"
     return FileResponse(record.image_path, media_type=media)
+
+
+@router.delete("/{test_id}")
+def delete_test(
+    test_id: str,
+    db: Annotated[Session, Depends(get_db)],
+    _operator: Annotated[Operator, Depends(get_current_operator)],
+):
+    record = db.query(TestRecord).filter(TestRecord.id == test_id).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Evidence test record not found")
+
+    # Clean up physical image file if present
+    try:
+        from pathlib import Path
+        if record.image_path and Path(record.image_path).exists():
+            Path(record.image_path).unlink(missing_ok=True)
+    except Exception:
+        pass
+
+    db.delete(record)
+    db.commit()
+    return {"status": "deleted", "id": test_id}

@@ -140,4 +140,10 @@ export async function detectLocation(): Promise<LocationInfo> {
   return data;
 }
 
+export async function deleteTest(id: string): Promise<{ status: string; id: string }> {
+  const { data } = await api.delete<{ status: string; id: string }>(`/tests/${id}`);
+  return data;
+}
+
 export { api };
+

@@ -42,8 +42,8 @@ export async function getCurrentLocation(): Promise<LocationData | null> {
 
   // Network resolved regional coordinates (approximate, unverified)
   return {
-    latitude: 28.6139,
-    longitude: 77.2090,
+    latitude: 19.0760,
+    longitude: 72.8777,
     accuracy: 3500,
     source: "network_ip_approximate",
     verified: false,

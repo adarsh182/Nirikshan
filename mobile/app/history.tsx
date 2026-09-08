@@ -9,11 +9,12 @@ import {
   ActivityIndicator,
   RefreshControl,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import TestHistoryCard from "../components/TestHistoryCard";
-import { getTestHistory } from "../services/api";
+import { getTestHistory, deleteTest } from "../services/api";
 import { Colors, Radius, Spacing } from "../constants/theme";
 import type { TestRecord } from "../types";
 
@@ -47,9 +48,33 @@ export default function HistoryScreen() {
     fetchHistory();
   }, [fetchHistory]);
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    fetchHistory();
+    await fetchHistory();
+    setRefreshing(false);
+  };
+
+  const handleDeleteTest = (test: TestRecord) => {
+    Alert.alert(
+      "Delete Evidence Record",
+      `Permanently purge record #${test.id.slice(0, 8)} (${test.kit_type_name || "Reagent"})? This will irrevocably delete the captured image and cryptographic signatures.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteTest(test.id);
+              setTests((prev) => prev.filter((t) => t.id !== test.id));
+              setTotalCount((prev) => Math.max(0, prev - 1));
+            } catch (err: any) {
+              Alert.alert("Error", err?.message || "Failed to delete test record.");
+            }
+          },
+        },
+      ]
+    );
   };
 
   const filterOptions = [
@@ -137,6 +162,7 @@ export default function HistoryScreen() {
                     params: { testId: item.id },
                   });
                 }}
+                onDelete={() => handleDeleteTest(item)}
               />
             )}
             ListEmptyComponent={

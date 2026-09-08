@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import ResultBadge from "../components/ResultBadge";
-import { getTests } from "../services/api";
+import { getTests, deleteTest } from "../services/api";
 import type { TestRecord } from "../types";
 
 export default function TestLogPage() {
@@ -11,6 +11,8 @@ export default function TestLogPage() {
   const [loading, setLoading] = useState(true);
   const [resultFilter, setResultFilter] = useState("");
   const [search, setSearch] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<TestRecord | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const pageSize = 12;
 
@@ -32,6 +34,22 @@ export default function TestLogPage() {
   useEffect(() => {
     fetchRecords();
   }, [fetchRecords]);
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await deleteTest(deleteTarget.id);
+      setTests((prev) => prev.filter((t) => t.id !== deleteTarget.id));
+      setTotal((prev) => Math.max(0, prev - 1));
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error("Failed to delete test record:", err);
+      alert("Failed to delete evidence record.");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const handleExportCsv = () => {
     if (tests.length === 0) return;
@@ -243,12 +261,24 @@ export default function TestLogPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <Link
-                          to={`/tests/${test.id}`}
-                          className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-emerald-300 rounded font-medium transition-colors inline-block"
-                        >
-                          Dossier
-                        </Link>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Link
+                            to={`/tests/${test.id}`}
+                            className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-emerald-300 rounded font-medium transition-colors inline-block"
+                          >
+                            Dossier
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => setDeleteTarget(test)}
+                            className="p-1 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
+                            title="Delete Evidence Record"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                              <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clipRule="evenodd" />
+                            </svg>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -280,6 +310,53 @@ export default function TestLogPage() {
             >
               Next
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Permanent Deletion Confirmation Modal */}
+      {deleteTarget && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-red-500/50 rounded-xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+            <div className="flex items-center gap-3 text-red-400">
+              <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-red-400">
+                  <path fillRule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-slate-100">Permanently Delete Evidence?</h3>
+                <p className="text-xs text-red-400/80 font-mono">Dossier #{deleteTarget.id.slice(0, 8)}</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300">
+              Are you sure you want to permanently delete this evidence record for{" "}
+              <strong className="text-slate-100">{deleteTarget.kit_type_name || "Presumptive Test"}</strong> captured by officer{" "}
+              <strong className="text-emerald-400 font-mono">{deleteTarget.operator_badge_id}</strong>?
+            </p>
+            <p className="text-[11px] text-red-400/90 font-medium">
+              This will permanently purge the photographic file, cryptographic signatures, and audit logs. This cannot be undone.
+            </p>
+
+            <div className="flex gap-2 justify-end pt-2">
+              <button
+                type="button"
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                disabled={deleting}
+                className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 disabled:opacity-50"
+              >
+                {deleting ? "Purging..." : "Confirm Delete"}
+              </button>
+            </div>
           </div>
         </div>
       )}

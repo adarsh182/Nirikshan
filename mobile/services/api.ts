@@ -159,4 +159,9 @@ export async function overrideTestResult(
   return request<TestRecord>(`/tests/${testId}`, { method: "PATCH", body: form });
 }
 
+export async function deleteTest(testId: string): Promise<{ status: string; id: string }> {
+  return request<{ status: string; id: string }>(`/tests/${testId}`, { method: "DELETE" });
+}
+
 export { API_BASE };
+
