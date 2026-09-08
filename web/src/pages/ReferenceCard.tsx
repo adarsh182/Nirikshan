@@ -1,3 +1,4 @@
+/* Hallmark · genre: modern-minimal · macrostructure: Workbench · theme: cobalt · design-system: design.md · designed-as-app */
 import { Link } from "react-router-dom";
 
 export default function ReferenceCardPage() {
@@ -25,51 +26,58 @@ export default function ReferenceCardPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="space-y-5 sm:space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 pb-4 border-b border-slate-200">
         <div>
-          <Link to="/" className="text-sm text-emerald-400 hover:underline mb-2 inline-block">
-            ← Back to Dashboard
+          <Link
+            to="/"
+            className="text-xs font-mono text-sky-700 hover:text-sky-800 font-semibold mb-1.5 inline-flex items-center gap-1 tactile-btn touch-target"
+          >
+            <span>←</span>
+            <span>BACK TO DASHBOARD</span>
           </Link>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-100 flex items-center gap-3">
-            Forensic Reference Color Card Specification
-            <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">
-              ISO/CIE Standard
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 font-mono">
+              Calibration Standard Card
+            </h1>
+            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-sky-50 text-sky-700 font-semibold border border-sky-200">
+              ISO/CIE COMPLIANT
             </span>
-          </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            In-frame lighting calibration standard for field drug test colorimetry (FTC Standard v1.0).
+          </div>
+          <p className="text-xs text-slate-500 mt-1 max-w-xl">
+            In-frame optical calibration card specification for field colorimetric normalization (FTC Standard v1.0).
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2.5 pt-1 sm:pt-0">
           <button
             onClick={handleDownloadSvg}
-            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            className="px-3.5 py-2.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-lg text-xs font-mono font-semibold transition-colors tactile-btn touch-target flex items-center gap-1.5 shadow-xs"
           >
-            Download SVG
+            <span>DOWNLOAD SVG</span>
           </button>
           <button
             onClick={handlePrint}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-emerald-900/30 flex items-center gap-2"
+            className="px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-mono font-bold tracking-wider uppercase shadow-xs transition-all tactile-btn touch-target flex items-center gap-1.5"
           >
-            Print Standard Card
+            <span>PRINT CARD</span>
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
         {/* Visual Card Display */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col items-center justify-center">
-          <p className="text-xs uppercase tracking-wider text-slate-400 mb-4 font-semibold">
-            Actual Card Dimension: 50mm × 30mm (2:3 Aspect)
+        <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 flex flex-col items-center justify-center shadow-xs space-y-4">
+          <p className="text-[10px] uppercase font-mono tracking-widest text-slate-500 font-semibold">
+            ACTUAL SPECIFICATION: 50MM × 30MM (2:3 RATIO)
           </p>
 
-          <div className="bg-slate-950 p-6 rounded-2xl border-2 border-dashed border-slate-700 shadow-2xl">
+          <div className="bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm max-w-full">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 500 300"
-              className="w-80 sm:w-96 h-auto drop-shadow-md rounded-lg overflow-hidden bg-slate-900"
+              className="w-72 sm:w-96 h-auto drop-shadow-sm rounded-lg overflow-hidden bg-slate-900"
             >
               <rect width="500" height="300" fill="#0f172a" rx="8" />
               {/* Row 1 */}
@@ -90,87 +98,93 @@ export default function ReferenceCardPage() {
             </svg>
           </div>
 
-          <p className="text-xs text-slate-500 mt-4 text-center max-w-sm">
-            Print on matte photo paper or display on a smartphone screen beside the test kit for in-frame calibration.
+          <p className="text-[11px] text-slate-500 font-mono text-center max-w-sm">
+            Print onto matte paper or display on a smartphone screen directly adjacent to the chemical spot plate for automated white-balance calibration.
           </p>
         </div>
 
-        {/* Patch Specifications */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-          <h2 className="text-base font-semibold mb-4 text-slate-200">Color Patch Technical Specifications</h2>
+        {/* Patch Technical Specifications */}
+        <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 shadow-xs space-y-4">
+          <div className="border-b border-slate-100 pb-2.5">
+            <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-900 font-mono">
+              6-PATCH SPECTRAL SPECIFICATIONS
+            </h2>
+            <p className="text-xs text-slate-500">Standardized sRGB and CIE target matrices.</p>
+          </div>
+
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-slate-800 text-slate-400 text-left">
-                  <th className="pb-2">Patch</th>
-                  <th className="pb-2">Color</th>
-                  <th className="pb-2">sRGB</th>
-                  <th className="pb-2">Calibration Purpose</th>
+                <tr className="border-b border-slate-200 text-slate-600 font-mono text-left bg-slate-50">
+                  <th className="px-3 py-2.5 font-semibold">PATCH</th>
+                  <th className="px-3 py-2.5 font-semibold">COLOR</th>
+                  <th className="px-3 py-2.5 font-semibold">sRGB</th>
+                  <th className="px-3 py-2.5 font-semibold">OPTICAL ROLE</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-slate-100 font-mono text-[11px]">
                 <tr>
-                  <td className="py-2.5 font-mono text-emerald-400">#1</td>
-                  <td className="py-2.5 font-medium flex items-center gap-2">
-                    <span className="w-3.5 h-3.5 rounded bg-white border border-slate-600 inline-block" />
+                  <td className="px-3 py-2.5 text-sky-700 font-bold">#1</td>
+                  <td className="px-3 py-2.5 font-medium flex items-center gap-2 text-slate-900">
+                    <span className="w-3.5 h-3.5 rounded bg-white border border-slate-300 inline-block shadow-2xs" />
                     White
                   </td>
-                  <td className="py-2.5 font-mono text-slate-400">255, 255, 255</td>
-                  <td className="py-2.5 text-slate-300">White balance & sensor exposure ceiling</td>
+                  <td className="px-3 py-2.5 text-slate-600">255, 255, 255</td>
+                  <td className="px-3 py-2.5 text-slate-600 font-sans">Sensor exposure ceiling & highlight clip</td>
                 </tr>
                 <tr>
-                  <td className="py-2.5 font-mono text-emerald-400">#2</td>
-                  <td className="py-2.5 font-medium flex items-center gap-2">
-                    <span className="w-3.5 h-3.5 rounded bg-[#767676] inline-block" />
+                  <td className="px-3 py-2.5 text-sky-700 font-bold">#2</td>
+                  <td className="px-3 py-2.5 font-medium flex items-center gap-2 text-slate-900">
+                    <span className="w-3.5 h-3.5 rounded bg-[#767676] inline-block shadow-2xs" />
                     18% Gray
                   </td>
-                  <td className="py-2.5 font-mono text-slate-400">118, 118, 118</td>
-                  <td className="py-2.5 text-slate-300">Mid-tone chromatic adaptation ($L^*=50$)</td>
+                  <td className="px-3 py-2.5 text-slate-600">118, 118, 118</td>
+                  <td className="px-3 py-2.5 text-slate-600 font-sans">Mid-tone chromatic adaptation (L*=50)</td>
                 </tr>
                 <tr>
-                  <td className="py-2.5 font-mono text-emerald-400">#3</td>
-                  <td className="py-2.5 font-medium flex items-center gap-2">
-                    <span className="w-3.5 h-3.5 rounded bg-[#ef4444] inline-block" />
+                  <td className="px-3 py-2.5 text-sky-700 font-bold">#3</td>
+                  <td className="px-3 py-2.5 font-medium flex items-center gap-2 text-slate-900">
+                    <span className="w-3.5 h-3.5 rounded bg-[#ef4444] inline-block shadow-2xs" />
                     Red
                   </td>
-                  <td className="py-2.5 font-mono text-slate-400">239, 68, 68</td>
-                  <td className="py-2.5 text-slate-300">Primary long-wavelength color channel anchor</td>
+                  <td className="px-3 py-2.5 text-slate-600">239, 68, 68</td>
+                  <td className="px-3 py-2.5 text-slate-600 font-sans">Primary long-wavelength channel anchor</td>
                 </tr>
                 <tr>
-                  <td className="py-2.5 font-mono text-emerald-400">#4</td>
-                  <td className="py-2.5 font-medium flex items-center gap-2">
-                    <span className="w-3.5 h-3.5 rounded bg-[#22c55e] inline-block" />
+                  <td className="px-3 py-2.5 text-sky-700 font-bold">#4</td>
+                  <td className="px-3 py-2.5 font-medium flex items-center gap-2 text-slate-900">
+                    <span className="w-3.5 h-3.5 rounded bg-[#22c55e] inline-block shadow-2xs" />
                     Green
                   </td>
-                  <td className="py-2.5 font-mono text-slate-400">34, 197, 94</td>
-                  <td className="py-2.5 text-slate-300">Mid-wavelength channel anchor & luminance</td>
+                  <td className="px-3 py-2.5 text-slate-600">34, 197, 94</td>
+                  <td className="px-3 py-2.5 text-slate-600 font-sans">Mid-wavelength anchor & illuminant flux</td>
                 </tr>
                 <tr>
-                  <td className="py-2.5 font-mono text-emerald-400">#5</td>
-                  <td className="py-2.5 font-medium flex items-center gap-2">
-                    <span className="w-3.5 h-3.5 rounded bg-[#3b82f6] inline-block" />
+                  <td className="px-3 py-2.5 text-sky-700 font-bold">#5</td>
+                  <td className="px-3 py-2.5 font-medium flex items-center gap-2 text-slate-900">
+                    <span className="w-3.5 h-3.5 rounded bg-[#3b82f6] inline-block shadow-2xs" />
                     Blue
                   </td>
-                  <td className="py-2.5 font-mono text-slate-400">59, 130, 246</td>
-                  <td className="py-2.5 text-slate-300">Short-wavelength channel anchor</td>
+                  <td className="px-3 py-2.5 text-slate-600">59, 130, 246</td>
+                  <td className="px-3 py-2.5 text-slate-600 font-sans">Short-wavelength channel anchor</td>
                 </tr>
                 <tr>
-                  <td className="py-2.5 font-mono text-emerald-400">#6</td>
-                  <td className="py-2.5 font-medium flex items-center gap-2">
-                    <span className="w-3.5 h-3.5 rounded bg-black border border-slate-700 inline-block" />
+                  <td className="px-3 py-2.5 text-sky-700 font-bold">#6</td>
+                  <td className="px-3 py-2.5 font-medium flex items-center gap-2 text-slate-900">
+                    <span className="w-3.5 h-3.5 rounded bg-black border border-slate-300 inline-block shadow-2xs" />
                     Black
                   </td>
-                  <td className="py-2.5 font-mono text-slate-400">0, 0, 0</td>
-                  <td className="py-2.5 text-slate-300">Dark level & flare baseline compensation</td>
+                  <td className="px-3 py-2.5 text-slate-600">0, 0, 0</td>
+                  <td className="px-3 py-2.5 text-slate-600 font-sans">Dark current flare baseline calibration</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <div className="mt-6 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300 space-y-1">
-            <p className="font-semibold">Calibration Algorithm (Backend OpenCV Pipeline):</p>
-            <p className="text-slate-400">
-              The algorithm isolates the reference card ROI in the bottom-right quadrant, samples the 18% neutral gray patch to derive channel multipliers, corrects the test zone in CIE L*a*b* space, and computes Euclidean color distances against authenticated forensic reagent standards.
+          <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1 font-mono">
+            <p className="font-bold text-sky-700 text-[11px]">CALIBRATION ALGORITHM (OPENCV PIPELINE):</p>
+            <p className="text-slate-600 text-[11px] font-sans">
+              Isolates the reference card ROI in bottom-right quadrant, computes RGB channel gain multipliers against 18% neutral gray, and calculates delta-E Euclidean distance against verified narcotics library standards.
             </p>
           </div>
         </div>

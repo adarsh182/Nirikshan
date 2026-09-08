@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
+  Image,
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
@@ -53,9 +54,11 @@ export default function OperatorPickerScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header Branding */}
         <View style={styles.brandContainer}>
-          <View style={styles.badgeShield}>
-            <Ionicons name="shield-checkmark" size={36} color={Colors.primary} />
-          </View>
+          <Image
+            source={require("../assets/icon.png")}
+            style={styles.brandIcon}
+            resizeMode="contain"
+          />
           <Text style={styles.appTitle}>Nirikshan</Text>
           <Text style={styles.appSubtitle}>
             Forensic Intelligence & Presumptive Seizure Registry
@@ -154,15 +157,9 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
     marginBottom: Spacing.lg,
   },
-  badgeShield: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: "rgba(16, 185, 129, 0.12)",
-    borderWidth: 1.5,
-    borderColor: Colors.primary,
-    justifyContent: "center",
-    alignItems: "center",
+  brandIcon: {
+    width: 68,
+    height: 68,
     marginBottom: Spacing.sm + 2,
   },
   appTitle: {

@@ -5,34 +5,35 @@
   --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --color-paper: oklch(16% 0.015 255);
-  --color-paper-2: oklch(21% 0.018 255);
-  --color-paper-3: oklch(26% 0.022 255);
-  --color-ink: oklch(97% 0.005 250);
-  --color-ink-2: oklch(76% 0.015 250);
-  --color-ink-muted: oklch(55% 0.018 250);
-  --color-rule: oklch(28% 0.02 255);
-  --color-rule-strong: oklch(38% 0.03 255);
-  --color-accent: oklch(62% 0.22 250);
-  --color-positive: oklch(62% 0.23 25);
-  --color-negative: oklch(68% 0.19 148);
-  --color-inconclusive: oklch(74% 0.17 65);
+  --color-paper: oklch(98.5% 0.004 250);
+  --color-paper-2: oklch(100% 0 0);
+  --color-paper-3: oklch(96% 0.008 250);
+  --color-ink: oklch(24% 0.02 258);
+  --color-ink-2: oklch(45% 0.02 258);
+  --color-ink-muted: oklch(62% 0.015 258);
+  --color-rule: oklch(90% 0.01 250);
+  --color-rule-strong: oklch(80% 0.02 250);
+  --color-accent: oklch(58% 0.20 256);
+  --color-positive: oklch(55% 0.22 25);
+  --color-negative: oklch(58% 0.18 148);
+  --color-inconclusive: oklch(65% 0.16 65);
 }
 
 :root {
-  --color-paper: oklch(16% 0.015 255);
-  --color-paper-2: oklch(21% 0.018 255);
-  --color-paper-3: oklch(26% 0.022 255);
-  --color-paper-glass: oklch(18% 0.018 255 / 0.88);
-  --color-ink: oklch(97% 0.005 250);
-  --color-ink-2: oklch(76% 0.015 250);
-  --color-ink-muted: oklch(55% 0.018 250);
-  --color-rule: oklch(28% 0.02 255);
-  --color-rule-strong: oklch(38% 0.03 255);
-  --color-accent: oklch(62% 0.22 250);
-  --color-positive: oklch(62% 0.23 25);
-  --color-negative: oklch(68% 0.19 148);
-  --color-inconclusive: oklch(74% 0.17 65);
+  /* Hallmark Cobalt Light Mode Tokens */
+  --color-paper: oklch(98.5% 0.004 250);
+  --color-paper-2: oklch(100% 0 0);
+  --color-paper-3: oklch(96% 0.008 250);
+  --color-paper-glass: oklch(100% 0 0 / 0.92);
+  --color-ink: oklch(24% 0.02 258);
+  --color-ink-2: oklch(45% 0.02 258);
+  --color-ink-muted: oklch(62% 0.015 258);
+  --color-rule: oklch(90% 0.01 250);
+  --color-rule-strong: oklch(80% 0.02 250);
+  --color-accent: oklch(58% 0.20 256);
+  --color-positive: oklch(55% 0.22 25);
+  --color-negative: oklch(58% 0.18 148);
+  --color-inconclusive: oklch(65% 0.16 65);
 
   --font-display: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -68,7 +69,7 @@ html, body {
 
 /* Smooth micro-interactions */
 .tactile-btn {
-  transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1), background-color 150ms ease;
+  transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1), background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
 }
 .tactile-btn:active {
   transform: scale(0.97);

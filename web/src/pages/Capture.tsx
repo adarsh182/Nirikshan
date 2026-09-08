@@ -475,50 +475,50 @@ export default function CapturePage() {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-12">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      {/* Header - Clean Light Mode */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded">
+            <span className="px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider bg-sky-50 text-sky-700 border border-sky-200 rounded font-semibold">
               Forensic Station
             </span>
             <span className="text-slate-500 text-xs font-mono">Live Colorimetry Engine</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-100 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight font-mono">
             Field Evidence Capture & Analysis
           </h1>
-          <p className="text-slate-400 text-xs sm:text-sm mt-0.5">
+          <p className="text-slate-500 text-xs sm:text-sm mt-0.5">
             Capture chemical test reaction with reference card for automated calibration, classification, and cryptographic signing.
           </p>
         </div>
 
         <Link
           to="/tests"
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition self-start sm:self-center"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs font-mono font-semibold border border-slate-200 transition self-start sm:self-center shadow-xs"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-slate-400">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-slate-500">
             <path fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5A.75.75 0 012 10z" clipRule="evenodd" />
           </svg>
-          Evidence Register
+          <span>Evidence Register</span>
         </Link>
       </div>
 
       {/* Result Dossier Modal/Card (Shown after successful analysis) */}
       {submitResult && (
-        <div className="bg-slate-900 border border-emerald-500/50 rounded-xl p-6 space-y-6">
-          <div className="flex items-start justify-between gap-4 border-b border-slate-800 pb-4">
+        <div className="bg-white border border-emerald-500/40 rounded-xl p-5 sm:p-6 space-y-6 shadow-sm">
+          <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-                <span className="text-xs font-mono uppercase tracking-wider text-emerald-400 font-bold">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                <span className="text-xs font-mono uppercase tracking-wider text-emerald-700 font-bold">
                   Analysis Complete | Evidentiary Record Signed
                 </span>
               </div>
-              <h2 className="text-xl font-bold text-slate-100">
+              <h2 className="text-xl font-bold text-slate-900 font-mono">
                 Presumptive Forensic Determination
               </h2>
-              <p className="text-xs text-slate-400">
-                Record ID: <span className="font-mono text-slate-300">{submitResult.id}</span>
+              <p className="text-xs text-slate-500">
+                Record ID: <span className="font-mono text-slate-700">{submitResult.id}</span>
               </p>
             </div>
             <ResultBadge result={submitResult.result} />
@@ -526,19 +526,19 @@ export default function CapturePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Classification Card */}
-            <div className="bg-slate-950 border border-slate-800 rounded-lg p-4 space-y-2">
-              <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2">
+              <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider block font-semibold">
                 Chemical Reagent Class
               </span>
-              <p className="text-sm font-bold text-slate-100">
+              <p className="text-sm font-bold text-slate-900">
                 {getReagentClassTitle(submitResult.kit_type_name || selectedKit?.name || "Reagent")}
               </p>
               <div className="flex items-center gap-2 pt-1">
-                <div className="flex-1 bg-slate-800 rounded-full h-2 overflow-hidden">
+                <div className="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
                   <div
                     className={`h-full rounded-full ${
                       submitResult.result === "positive"
-                        ? "bg-red-500"
+                        ? "bg-rose-500"
                         : submitResult.result === "negative"
                         ? "bg-emerald-500"
                         : "bg-amber-500"
@@ -546,51 +546,51 @@ export default function CapturePage() {
                     style={{ width: `${Math.min(100, Math.max(10, submitResult.confidence * 100))}%` }}
                   />
                 </div>
-                <span className="text-xs font-mono font-bold text-slate-200">
+                <span className="text-xs font-mono font-bold text-slate-800">
                   {(submitResult.confidence * 100).toFixed(1)}%
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">
-                Reference Color-Match Confidence: {(submitResult.confidence * 100).toFixed(1)}%
+              <p className="text-[11px] text-slate-500">
+                Reference Color-Match: {(submitResult.confidence * 100).toFixed(1)}%
               </p>
             </div>
 
             {/* Cryptographic Hash */}
-            <div className="bg-slate-950 border border-slate-800 rounded-lg p-4 space-y-2">
-              <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2">
+              <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider block font-semibold">
                 Evidence Integrity Seal
               </span>
               <div className="space-y-1">
                 <span className="text-[10px] text-slate-500 font-mono block">SHA-256 IMAGE DIGEST</span>
-                <p className="font-mono text-[11px] text-slate-300 truncate" title={submitResult.image_hash}>
+                <p className="font-mono text-[11px] text-slate-700 truncate" title={submitResult.image_hash}>
                   {submitResult.image_hash}
                 </p>
               </div>
               <div className="space-y-1 pt-1">
                 <span className="text-[10px] text-slate-500 font-mono block">HMAC RECORD SIGNATURE</span>
-                <p className="font-mono text-[11px] text-emerald-400 truncate" title={submitResult.signature}>
+                <p className="font-mono text-[11px] text-emerald-700 font-semibold truncate" title={submitResult.signature}>
                   {submitResult.signature}
                 </p>
               </div>
             </div>
 
             {/* Location & Time */}
-            <div className="bg-slate-950 border border-slate-800 rounded-lg p-4 space-y-2">
-              <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2">
+              <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider block font-semibold">
                 Chain of Custody
               </span>
-              <p className="text-xs text-slate-300">
-                Attributed Officer: <span className="font-mono text-slate-100">{submitResult.operator_badge_id || "OFF-001"}</span>
+              <p className="text-xs text-slate-700">
+                Officer: <span className="font-mono text-slate-900 font-semibold">{submitResult.operator_badge_id || "OFF-001"}</span>
               </p>
-              <div className="flex items-center justify-between text-xs text-slate-300">
+              <div className="flex items-center justify-between text-xs text-slate-700">
                 <p>
-                  Coordinates: <span className="font-mono text-slate-100">{submitResult.latitude.toFixed(4)}°, {submitResult.longitude.toFixed(4)}°</span>
+                  Coords: <span className="font-mono text-slate-900">{submitResult.latitude.toFixed(4)}°, {submitResult.longitude.toFixed(4)}°</span>
                 </p>
                 <a
                   href={`https://www.google.com/maps?q=${submitResult.latitude},${submitResult.longitude}&z=17`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[11px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-1"
+                  className="text-[11px] text-sky-700 hover:text-sky-800 font-semibold hover:underline flex items-center gap-1"
                   title="Open GPS Pin in Google Maps"
                 >
                   <span>📍 Map Pin</span>
@@ -599,29 +599,29 @@ export default function CapturePage() {
               <div className="pt-1">
                 <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-mono font-semibold ${
                   submitResult.location_verified
-                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-                    : "bg-amber-500/10 text-amber-400 border border-amber-500/30"
+                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                    : "bg-amber-50 text-amber-700 border border-amber-200"
                 }`}>
-                  {submitResult.location_verified ? "GPS Hardware Verified" : "Approximate Network Fix"}
+                  {submitResult.location_verified ? "GPS Hardware Verified" : "Approximate Fix"}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between border-t border-slate-800 pt-4 gap-3">
-            <p className="text-xs text-slate-400 italic">
+          <div className="flex flex-wrap items-center justify-between border-t border-slate-200 pt-4 gap-3">
+            <p className="text-xs text-slate-500 italic">
               Presumptive screening result — confirmatory laboratory analysis required
             </p>
             <div className="flex items-center gap-3">
               <button
                 onClick={handleRetake}
-                className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition"
+                className="px-4 py-2 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs font-mono font-semibold border border-slate-200 transition shadow-xs"
               >
-                Capture Another Test
+                Capture Another
               </button>
               <button
                 onClick={() => navigate(`/tests/${submitResult.id}`)}
-                className="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center gap-2"
+                className="px-5 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-mono font-bold transition flex items-center gap-2 shadow-sm"
               >
                 <span>Open Forensic Dossier</span>
               </button>
@@ -632,62 +632,62 @@ export default function CapturePage() {
 
       {/* Main Workflow (Shown when not showing result) */}
       {!submitResult && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column: Kit Selection & Custody Telemetry (4 cols) - High-Contrast Field Light Mode */}
-          <div className="lg:col-span-4 space-y-5">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+          {/* Left Column: Kit Selection & Custody Telemetry (4 cols) - Hallmark Canonical Light Mode */}
+          <div className="lg:col-span-4 space-y-4">
             {/* Reagent Kit Selection */}
-            <div className="bg-white border border-slate-300 rounded-xl p-5 shadow-sm space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900">Reagent Kit Standard</h3>
-                  <p className="text-xs text-slate-600">Select chemical colorimetric standard</p>
+                  <h3 className="text-xs sm:text-sm font-bold font-mono text-slate-900 uppercase tracking-wide">Reagent Standard</h3>
+                  <p className="text-[11px] text-slate-500">Chemical colorimetric standard</p>
                 </div>
-                <span className="text-[11px] text-slate-700 font-mono font-medium">
-                  {kits.length} standards
+                <span className="text-[10px] text-sky-700 font-mono bg-sky-50 px-1.5 py-0.5 rounded border border-sky-200 font-semibold">
+                  {kits.length} KITS
                 </span>
               </div>
 
               {kitsLoading ? (
-                <div className="py-6 text-center text-xs text-slate-600">
-                  <div className="w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-                  Loading field reagents...
+                <div className="py-6 text-center text-xs text-slate-500 font-mono">
+                  <div className="w-5 h-5 border-2 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                  LOADING REAGENTS...
                 </div>
               ) : (
-                <div className="space-y-2 max-h-[380px] overflow-y-auto pr-1">
+                <div className="space-y-1.5 max-h-[340px] overflow-y-auto pr-1">
                   {kits.map((kit) => {
                     const isSelected = kit.id === selectedKitId;
                     return (
                       <div
                         key={kit.id}
                         onClick={() => setSelectedKitId(kit.id)}
-                        className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                        className={`p-3 rounded-lg border cursor-pointer transition-all tactile-btn ${
                           isSelected
-                            ? "bg-emerald-50 border-emerald-600 ring-1 ring-emerald-600 shadow-sm"
-                            : "bg-slate-50 border-slate-200 hover:border-slate-400 hover:bg-slate-100"
+                            ? "bg-sky-50/80 border-sky-500 shadow-xs ring-1 ring-sky-500/30"
+                            : "bg-slate-50 border-slate-200 hover:border-slate-300 hover:bg-slate-100/70"
                         }`}
                       >
                         <div className="flex items-start justify-between gap-2">
-                          <div className="space-y-1">
-                            <span className="text-xs font-bold text-slate-900 block">
+                          <div className="space-y-0.5 min-w-0">
+                            <span className="text-xs font-semibold text-slate-900 block truncate">
                               {getReagentClassTitle(kit.name)}
                             </span>
-                            <span className="text-[11px] text-slate-600 block line-clamp-1">
+                            <span className="text-[10px] text-slate-500 block line-clamp-1 font-mono">
                               {kit.description || "Presumptive colorimetric screening"}
                             </span>
                           </div>
                           {isSelected && (
-                            <span className="w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">
+                            <span className="w-4 h-4 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">
                               ✓
                             </span>
                           )}
                         </div>
 
                         {isSelected && (
-                          <div className="mt-2 pt-2 border-t border-emerald-200 text-[11px] text-slate-700 space-y-1">
-                            <p className="line-clamp-2">{kit.description}</p>
-                            <div className="flex items-center gap-1.5 pt-1 text-[10px] font-mono text-emerald-700 font-semibold">
-                              <span>Reference match threshold:</span>
-                              <span>{(kit.confidence_threshold * 100).toFixed(0)}%</span>
+                          <div className="mt-2 pt-2 border-t border-sky-200/60 text-[11px] text-slate-700 space-y-1">
+                            <p className="line-clamp-2 text-slate-600 text-[10px]">{kit.description}</p>
+                            <div className="flex items-center justify-between pt-1 text-[10px] font-mono text-sky-700">
+                              <span>MATCH THRESHOLD:</span>
+                              <span className="font-bold">{(kit.confidence_threshold * 100).toFixed(0)}%</span>
                             </div>
                           </div>
                         )}
@@ -699,35 +699,35 @@ export default function CapturePage() {
             </div>
 
             {/* Location & Custody Telemetry */}
-            <div className="bg-white border border-slate-300 rounded-xl p-5 shadow-sm space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900">Incident Location</h3>
-                  <p className="text-xs text-slate-600">Tamper-evident coordinates</p>
+                  <h3 className="text-xs sm:text-sm font-bold font-mono text-slate-900 uppercase tracking-wide">Incident Location</h3>
+                  <p className="text-[11px] text-slate-500">Tamper-evident coordinates</p>
                 </div>
 
                 <button
                   type="button"
                   onClick={() => requestLocation(true)}
                   disabled={locating}
-                  className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 transition disabled:opacity-50 shadow-sm"
+                  className="px-2.5 py-1.5 rounded-md bg-sky-600 hover:bg-sky-500 text-white text-[11px] font-mono font-bold flex items-center gap-1.5 transition disabled:opacity-50 tactile-btn touch-target shadow-xs"
                   title="Request device GPS fix"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={`w-3.5 h-3.5 ${locating ? "animate-spin" : ""}`}>
                     <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433 1.244-.77 2.946-2.096 4.358-4.004C17.15 12.44 18 9.948 18 7.5A8 8 0 002 7.5c0 2.448.85 4.94 2.27 6.848 1.412 1.908 3.114 3.234 4.358 4.004.311.193.571.337.757.433a5.741 5.741 0 00.299.148l.006.003zM10 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7z" clipRule="evenodd" />
                   </svg>
-                  <span>{locating ? "Acquiring..." : "Acquire Device GPS"}</span>
+                  <span>{locating ? "ACQUIRING..." : "GPS SYNC"}</span>
                 </button>
               </div>
 
               {locationError && (
-                <div className="p-3 rounded-lg bg-amber-50 border border-amber-300 text-amber-900 text-xs space-y-2">
+                <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs space-y-2">
                   <div className="flex items-start gap-2">
-                    <span className="text-base shrink-0">⚠️</span>
-                    <p className="leading-relaxed">{locationError}</p>
+                    <span className="text-sm shrink-0">⚠️</span>
+                    <p className="leading-relaxed text-[11px]">{locationError}</p>
                   </div>
-                  <div className="flex items-center justify-between pt-1 border-t border-amber-200 text-[11px]">
-                    <span className="text-amber-800">For lab evaluation / demonstration:</span>
+                  <div className="flex items-center justify-between pt-1 border-t border-amber-200 text-[10px] font-mono">
+                    <span className="text-amber-700">Simulation:</span>
                     <button
                       type="button"
                       onClick={() => {
@@ -742,44 +742,44 @@ export default function CapturePage() {
                         });
                         setLocationError(null);
                       }}
-                      className="font-bold text-emerald-800 underline hover:text-emerald-950"
+                      className="font-bold text-sky-700 hover:underline"
                     >
-                      Simulate Hardware GPS (±12m)
+                      SIMULATE GPS (±12m)
                     </button>
                   </div>
                 </div>
               )}
 
-              <div className="bg-slate-50 border border-slate-200 rounded-lg p-3.5 space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+              <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2 font-mono">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1.5">
                     <span
-                      className={`w-2.5 h-2.5 rounded-full ${
+                      className={`w-2 h-2 rounded-full ${
                         location.verified
-                          ? "bg-emerald-600"
+                          ? "bg-emerald-500"
                           : location.source === "manual_override"
-                          ? "bg-blue-600"
-                          : "bg-amber-600"
+                          ? "bg-sky-500"
+                          : "bg-amber-500"
                       }`}
                     />
-                    <span className="text-xs font-mono font-bold text-slate-900">
+                    <span className="text-[11px] font-semibold text-slate-800">
                       {location.verified
-                        ? "Device GPS Locked"
+                        ? "GPS LOCKED"
                         : location.source === "manual_override"
-                        ? "Manual Entry"
-                        : "Approximate Network Fix"}
+                        ? "MANUAL OVERRIDE"
+                        : "REGIONAL NETWORK"}
                     </span>
                   </div>
                   {location.accuracy != null && (
-                    <span className="text-xs font-mono font-bold text-slate-700">
+                    <span className="text-[10px] text-slate-500 font-semibold">
                       ±{location.accuracy < 1000 ? `${location.accuracy}m` : `${(location.accuracy / 1000).toFixed(1)}km`}
                     </span>
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-xs font-mono text-slate-900 pt-1">
+                <div className="grid grid-cols-2 gap-2 text-xs pt-1">
                   <div>
-                    <span className="text-[10px] text-slate-500 font-semibold block">LATITUDE</span>
+                    <span className="text-[9px] text-slate-500 uppercase font-semibold block">LAT</span>
                     <input
                       type="number"
                       step="0.000001"
@@ -792,11 +792,11 @@ export default function CapturePage() {
                           verified: false,
                         }));
                       }}
-                      className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-emerald-600 font-mono"
+                      className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-900 focus:outline-none focus:border-sky-500 font-mono shadow-2xs"
                     />
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-500 font-semibold block">LONGITUDE</span>
+                    <span className="text-[9px] text-slate-500 uppercase font-semibold block">LON</span>
                     <input
                       type="number"
                       step="0.000001"
@@ -809,38 +809,37 @@ export default function CapturePage() {
                           verified: false,
                         }));
                       }}
-                      className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-emerald-600 font-mono"
+                      className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-900 focus:outline-none focus:border-sky-500 font-mono shadow-2xs"
                     />
                   </div>
                 </div>
 
-                <div className="pt-2 flex items-center justify-between border-t border-slate-200">
-                  <span className="text-[11px] text-slate-600">
-                    {location.city ? `${location.city}, ${location.region || ""}` : "Coordinates recorded"}
+                <div className="pt-2 flex items-center justify-between border-t border-slate-200 text-[11px]">
+                  <span className="text-slate-600 truncate">
+                    {location.city ? `${location.city}, ${location.region || ""}` : "Coordinates Recorded"}
                   </span>
                   <a
                     href={`https://www.google.com/maps?q=${location.latitude},${location.longitude}&z=17`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-800 font-bold hover:underline transition"
-                    title="Open Pinned GPS in Google Maps"
+                    className="inline-flex items-center gap-1 text-[10px] text-sky-700 font-semibold hover:underline shrink-0"
                   >
-                    <span>View Map Pin</span>
+                    <span>MAP PIN ↗</span>
                   </a>
                 </div>
               </div>
 
               {/* Field Notes */}
               <div>
-                <label className="text-xs font-bold text-slate-900 uppercase tracking-wider block mb-1">
-                  Seizure Notes & Observations
+                <label className="text-[10px] font-bold font-mono text-slate-600 uppercase tracking-wider block mb-1">
+                  SEIZURE DOSSIER NOTES
                 </label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Case #, suspect details, seizure context, packaging..."
                   rows={2}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs text-slate-900 placeholder:text-slate-500 focus:outline-none focus:border-emerald-600 resize-none"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-sky-500 resize-none font-sans shadow-2xs"
                 />
               </div>
             </div>
@@ -849,7 +848,7 @@ export default function CapturePage() {
           {/* Right Column: Camera Viewport / Image Upload & Analysis (8 cols) */}
           <div className="lg:col-span-8 space-y-4">
             {/* Mode Switcher Tabs */}
-            <div className="flex items-center justify-between bg-slate-900/90 border border-slate-800 rounded-xl p-1.5">
+            <div className="flex items-center justify-between bg-white border border-slate-200 rounded-xl p-1.5 shadow-xs">
               <div className="flex items-center gap-1">
                 <button
                   type="button"
@@ -859,8 +858,8 @@ export default function CapturePage() {
                   }}
                   className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
                     mode === "camera"
-                      ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
-                      : "text-slate-400 hover:text-slate-200"
+                      ? "bg-sky-50 text-sky-700 border border-sky-200 font-bold shadow-2xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                   }`}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -877,8 +876,8 @@ export default function CapturePage() {
                   }}
                   className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
                     mode === "upload"
-                      ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
-                      : "text-slate-400 hover:text-slate-200"
+                      ? "bg-sky-50 text-sky-700 border border-sky-200 font-bold shadow-2xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                   }`}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -896,7 +895,7 @@ export default function CapturePage() {
                     setSelectedDeviceId(e.target.value);
                     startCamera(e.target.value);
                   }}
-                  className="bg-slate-950 text-slate-300 text-xs border border-slate-800 rounded px-2 py-1 focus:outline-none focus:border-emerald-500 max-w-[180px] truncate"
+                  className="bg-slate-50 text-slate-800 text-xs border border-slate-200 rounded px-2 py-1 focus:outline-none focus:border-sky-500 max-w-[180px] truncate"
                 >
                   {videoDevices.map((dev, i) => (
                     <option key={dev.deviceId} value={dev.deviceId}>
@@ -908,7 +907,7 @@ export default function CapturePage() {
             </div>
 
             {/* Viewport Frame */}
-            <div className="relative bg-black rounded-xl border border-slate-800 overflow-hidden min-h-[440px] flex items-center justify-center shadow-2xl">
+            <div className="relative bg-slate-950 rounded-xl border border-slate-800 overflow-hidden min-h-[440px] flex items-center justify-center shadow-lg">
               {/* Shutter visual flash effect */}
               {shutterFlash && (
                 <div className="absolute inset-0 bg-white z-50 pointer-events-none animate-out fade-out duration-200" />
@@ -980,7 +979,7 @@ export default function CapturePage() {
                         <button
                           type="button"
                           onClick={() => setMode("upload")}
-                          className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition"
+                          className="px-3.5 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold transition"
                         >
                           Switch to File Upload
                         </button>
@@ -991,7 +990,7 @@ export default function CapturePage() {
                   {/* Loading camera state */}
                   {!cameraActive && !cameraError && (
                     <div className="text-center space-y-3">
-                      <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                      <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />
                       <p className="text-xs font-mono text-slate-400">Initializing camera sensor...</p>
                     </div>
                   )}
@@ -1005,7 +1004,7 @@ export default function CapturePage() {
                           <span className="w-2 h-2 rounded-full bg-red-500" />
                           <span>LIVE FEED</span>
                           <span className="text-slate-600">|</span>
-                          <span className="text-emerald-400">{selectedKit?.name || "Reagent"}</span>
+                          <span className="text-sky-400">{selectedKit?.name || "Reagent"}</span>
                         </div>
 
                         <div className="bg-slate-950/80 border border-slate-800 rounded-lg px-3 py-1 text-[11px] font-mono text-slate-300">
@@ -1047,16 +1046,17 @@ export default function CapturePage() {
                         </div>
                       </div>
 
-                      {/* Bottom Shutter Controls */}
+                      {/* Bottom Shutter Controls - Mobile Ergonomics */}
                       <div className="absolute bottom-6 inset-x-0 flex items-center justify-center gap-6 z-20">
                         <button
                           type="button"
                           onClick={handleCaptureSnapshot}
-                          className="w-16 h-16 rounded-full bg-white p-1 shadow-2xl hover:scale-105 active:scale-95 transition-transform flex items-center justify-center group"
+                          className="w-18 h-18 rounded-full bg-slate-900/80 backdrop-blur-md p-1.5 shadow-2xl border-2 border-sky-400/80 active:scale-90 transition-transform flex items-center justify-center group tactile-btn"
                           title="Capture Evidence Photo"
+                          aria-label="Capture Evidence Photo"
                         >
-                          <div className="w-full h-full rounded-full border-2 border-slate-950 bg-emerald-500 group-hover:bg-emerald-400 transition-colors flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 text-slate-950">
+                          <div className="w-full h-full rounded-full bg-gradient-to-tr from-sky-500 to-cyan-400 group-hover:from-sky-400 group-hover:to-cyan-300 transition-colors flex items-center justify-center shadow-lg shadow-sky-500/30">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-slate-950">
                               <path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" />
                               <path fillRule="evenodd" d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 01-3 3h-15a3 3 0 01-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 001.11-.71l.822-1.315a2.75 2.75 0 012.332-1.39zM6.75 12.75a5.25 5.25 0 1110.5 0 5.25 5.25 0 01-10.5 0zm12-1.5a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
                             </svg>
@@ -1067,7 +1067,7 @@ export default function CapturePage() {
                   )}
                 </div>
               ) : (
-                /* Case C: File Upload Drag & Drop View */
+                /* Case C: File Upload Drag & Drop View - Light Mode */
                 <div
                   onDragOver={(e) => {
                     e.preventDefault();
@@ -1082,31 +1082,31 @@ export default function CapturePage() {
                     }
                   }}
                   className={`w-full h-full min-h-[440px] p-8 flex flex-col items-center justify-center text-center transition-colors ${
-                    isDragging ? "bg-emerald-950/20 border-2 border-emerald-500" : "bg-slate-950/80"
+                    isDragging ? "bg-sky-50 border-2 border-dashed border-sky-400" : "bg-white"
                   }`}
                 >
                   <div className="max-w-md space-y-4">
-                    <div className="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center mx-auto text-emerald-400">
+                    <div className="w-16 h-16 rounded-2xl bg-sky-50 border border-sky-200 flex items-center justify-center mx-auto text-sky-600 shadow-xs">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
                         <path fillRule="evenodd" d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.03 5.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72v4.94a.75.75 0 001.5 0v-4.94l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clipRule="evenodd" />
                       </svg>
                     </div>
 
                     <div className="space-y-1">
-                      <h4 className="text-base font-bold text-slate-100">
-                        Upload Evidence Photograph
+                      <h4 className="text-base font-bold text-slate-900 font-mono">
+                        UPLOAD EVIDENCE PHOTO
                       </h4>
-                      <p className="text-xs text-slate-400 leading-relaxed">
-                        Drag and drop a field test reaction photo, paste from clipboard (Ctrl+V), or select an image file from disk.
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        Drag & drop field reaction photo, paste from clipboard, or choose image file.
                       </p>
                     </div>
 
                     <div className="pt-2">
-                      <label className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold cursor-pointer transition shadow-lg shadow-emerald-950">
+                      <label className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-mono font-bold cursor-pointer transition shadow-xs tactile-btn touch-target">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
                           <path fillRule="evenodd" d="M4.5 2A1.5 1.5 0 003 3.5v13A1.5 1.5 0 004.5 18h11a1.5 1.5 0 001.5-1.5V7.621a1.5 1.5 0 00-.44-1.06l-4.12-4.122A1.5 1.5 0 0011.378 2H4.5zm2.25 8.5a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5zm0 3a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z" clipRule="evenodd" />
                         </svg>
-                        Browse Files
+                        <span>BROWSE GALLERY</span>
                         <input
                           type="file"
                           accept="image/*"
@@ -1118,8 +1118,8 @@ export default function CapturePage() {
                       </label>
                     </div>
 
-                    <p className="text-[11px] text-slate-500 font-mono">
-                      Supported formats: JPG, PNG, WEBP (up to 25 MB)
+                    <p className="text-[10px] text-slate-400 font-mono">
+                      SUPPORTED: JPG, PNG, WEBP (UP TO 25MB)
                     </p>
                   </div>
                 </div>
@@ -1128,8 +1128,8 @@ export default function CapturePage() {
 
             {/* Error banner */}
             {submitError && (
-              <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-xs flex items-start gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 flex-shrink-0 text-red-400">
+              <div className="p-4 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 flex-shrink-0 text-rose-600">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
                 </svg>
                 <div>
@@ -1139,49 +1139,49 @@ export default function CapturePage() {
               </div>
             )}
 
-            {/* Analysis Trigger Action Bar */}
+            {/* Analysis Trigger Action Bar - Light Mode */}
             {capturedBlob && (
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-sky-50 border border-sky-200 text-sky-600 flex items-center justify-center shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                       <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
                     </svg>
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-slate-100 block">
+                    <span className="text-xs font-bold text-slate-900 block">
                       {getReagentClassTitle(selectedKit?.name || "Reagent")}
                     </span>
-                    <span className="text-[11px] text-slate-400">
-                      Coordinates: {location.latitude.toFixed(4)}°, {location.longitude.toFixed(4)}° ({location.verified ? "GPS Lock" : "Approximate"})
+                    <span className="text-[11px] text-slate-500 font-mono">
+                      GPS: {location.latitude.toFixed(4)}°, {location.longitude.toFixed(4)}° ({location.verified ? "LOCKED" : "APPROX"})
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="flex items-center gap-2.5 w-full sm:w-auto">
                   <button
                     type="button"
                     onClick={handleRetake}
                     disabled={submitting}
-                    className="flex-1 sm:flex-initial px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition disabled:opacity-50"
+                    className="flex-1 sm:flex-initial px-4 py-2.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-xs font-mono font-semibold border border-slate-200 transition disabled:opacity-50 tactile-btn touch-target shadow-xs"
                   >
-                    Retake
+                    RETAKE
                   </button>
 
                   <button
                     type="button"
                     onClick={handleSubmitTest}
                     disabled={submitting}
-                    className="flex-1 sm:flex-initial px-6 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="flex-1 sm:flex-initial px-6 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-mono font-bold tracking-wider uppercase transition shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 tactile-btn touch-target whitespace-nowrap"
                   >
                     {submitting ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>Analyzing Evidence...</span>
+                        <span>ANALYZING...</span>
                       </>
                     ) : (
                       <>
-                        <span>Analyze & Classify Field Evidence</span>
+                        <span>ANALYZE EVIDENCE</span>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
                           <path fillRule="evenodd" d="M10.21 14.77a.75.75 0 01.02-1.06L14.168 10 10.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
                           <path fillRule="evenodd" d="M4.25 10a.75.75 0 01.75-.75h9.75a.75.75 0 010 1.5H5a.75.75 0 01-.75-.75z" clipRule="evenodd" />
@@ -1195,9 +1195,9 @@ export default function CapturePage() {
 
             {/* Submitting progress banner */}
             {submitting && submissionStep && (
-              <div className="bg-slate-900 border border-emerald-500/30 rounded-xl p-4 flex items-center gap-3">
-                <div className="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
-                <span className="text-xs font-mono text-emerald-400">{submissionStep}</span>
+              <div className="bg-sky-50 border border-sky-200 rounded-xl p-4 flex items-center gap-3">
+                <div className="w-4 h-4 border-2 border-sky-600 border-t-transparent rounded-full animate-spin" />
+                <span className="text-xs font-mono text-sky-800 font-semibold">{submissionStep}</span>
               </div>
             )}
           </div>

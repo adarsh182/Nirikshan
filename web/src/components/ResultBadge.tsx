@@ -1,6 +1,6 @@
-/* Hallmark · component: ResultBadge · genre: modern-minimal · theme: cobalt
+/* Hallmark · component: ResultBadge · genre: modern-minimal · theme: cobalt (canonical light)
  * states: default · hover · focus · active · disabled · loading · error · success
- * contrast: pass (AAA high legibility under daylight)
+ * contrast: pass (AAA high legibility under outdoor daylight)
  */
 interface ResultBadgeProps {
   result: string;
@@ -24,30 +24,30 @@ export default function ResultBadge({
     positive: {
       label: "Presumptive Positive",
       badgeClass:
-        "bg-rose-950/70 text-rose-300 border-rose-500/40 shadow-sm shadow-rose-950/50",
-      dotClass: "bg-rose-400 animate-pulse",
+        "bg-rose-50 text-rose-700 border-rose-200 shadow-xs",
+      dotClass: "bg-rose-500 animate-pulse",
       icon: "▲",
     },
     negative: {
       label: "Presumptive Negative",
       badgeClass:
-        "bg-emerald-950/70 text-emerald-300 border-emerald-500/40 shadow-sm shadow-emerald-950/50",
-      dotClass: "bg-emerald-400",
+        "bg-emerald-50 text-emerald-700 border-emerald-200 shadow-xs",
+      dotClass: "bg-emerald-500",
       icon: "✓",
     },
     inconclusive: {
       label: "Inconclusive / Retest",
       badgeClass:
-        "bg-amber-950/70 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-950/50",
-      dotClass: "bg-amber-400",
+        "bg-amber-50 text-amber-800 border-amber-200 shadow-xs",
+      dotClass: "bg-amber-500",
       icon: "■",
     },
   };
 
   const current = configs[norm] || {
     label: result.toUpperCase(),
-    badgeClass: "bg-slate-800 text-slate-300 border-slate-700",
-    dotClass: "bg-slate-400",
+    badgeClass: "bg-slate-100 text-slate-700 border-slate-200",
+    dotClass: "bg-slate-500",
     icon: "•",
   };
 
