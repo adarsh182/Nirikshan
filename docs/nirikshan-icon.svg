@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="50%" stop-color="#090E1A" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+
+    <!-- Shield Border Gradient -->
+    <linearGradient id="shieldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="50%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+
+    <!-- Flask Glass Gradient -->
+    <linearGradient id="glassGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E2E8F0" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="1" />
+      <stop offset="100%" stop-color="#94A3B8" stop-opacity="0.8" />
+    </linearGradient>
+
+    <!-- Reagent Liquid Gradient -->
+    <linearGradient id="reagentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399" />
+      <stop offset="60%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="emeraldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Base Squircle -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+  <rect width="508" height="508" x="2" y="2" rx="110" fill="none" stroke="url(#shieldBorder)" stroke-width="3" stroke-opacity="0.35" />
+
+  <!-- Background Radar / Optical Grid -->
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#1E293B" stroke-width="1.5" stroke-dasharray="4 6" />
+  <circle cx="256" cy="256" r="110" fill="none" stroke="#1E293B" stroke-width="1.5" />
+  <line x1="256" y1="76" x2="256" y2="436" stroke="#1E293B" stroke-width="1" stroke-opacity="0.4" />
+  <line x1="76" y1="256" x2="436" y2="256" stroke="#1E293B" stroke-width="1" stroke-opacity="0.4" />
+
+  <!-- Outer Custody Shield -->
+  <path d="M256 92
+           C328 126 386 128 386 128
+           C386 244 354 340 256 396
+           C158 340 126 244 126 128
+           C126 128 184 126 256 92 Z"
+        fill="#0D1626"
+        stroke="url(#shieldBorder)"
+        stroke-width="8"
+        stroke-linejoin="round" />
+
+  <!-- Inner Shield Glow Inset -->
+  <path d="M256 112
+           C314 140 362 142 362 142
+           C362 238 334 320 256 368
+           C178 320 150 238 150 142
+           C150 142 198 140 256 112 Z"
+        fill="#09101F"
+        stroke="#10B981"
+        stroke-width="1.5"
+        stroke-opacity="0.3" />
+
+  <!-- Chemical Flask (Forensic Testing) -->
+  <!-- Neck -->
+  <path d="M236 172 L276 172 L276 216 L236 216 Z" fill="url(#glassGrad)" />
+  <!-- Lip -->
+  <rect x="230" y="166" width="52" height="8" rx="4" fill="url(#glassGrad)" />
+
+  <!-- Body -->
+  <path d="M236 216 L200 292 C194 304 203 318 217 318 L295 318 C309 318 318 304 312 292 L276 216 Z"
+        fill="url(#glassGrad)"
+        fill-opacity="0.15"
+        stroke="url(#glassGrad)"
+        stroke-width="5"
+        stroke-linejoin="round" />
+
+  <!-- Reagent Reaction Fluid (Vibrant Emerald with glow) -->
+  <path d="M208 274
+           Q232 282 256 274
+           Q280 266 304 274
+           L308 296
+           C312 306 305 316 295 316
+           L217 316
+           C207 316 200 306 204 296 Z"
+        fill="url(#reagentGrad)"
+        filter="url(#emeraldGlow)" />
+
+  <!-- Optical Calibration Dots (Forensic Reference standard: Emerald, Gold, Violet) -->
+  <circle cx="218" cy="346" r="6.5" fill="#10B981" />
+  <circle cx="256" cy="346" r="6.5" fill="#F59E0B" />
+  <circle cx="294" cy="346" r="6.5" fill="#8B5CF6" />
+
+  <!-- Forensic Optical Reticle Corners -->
+  <path d="M196 176 L180 176 L180 192" fill="none" stroke="#06B6D4" stroke-width="3" stroke-linecap="round" />
+  <path d="M316 176 L332 176 L332 192" fill="none" stroke="#06B6D4" stroke-width="3" stroke-linecap="round" />
+  <path d="M180 290 L180 306 L196 306" fill="none" stroke="#06B6D4" stroke-width="3" stroke-linecap="round" />
+  <path d="M332 290 L332 306 L316 306" fill="none" stroke="#06B6D4" stroke-width="3" stroke-linecap="round" />
+
+  <!-- Center Crosshair Target Dot -->
+  <circle cx="256" cy="242" r="3.5" fill="#F8FAFC" />
+</svg>
