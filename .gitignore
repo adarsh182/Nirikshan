@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.expo/
+dist/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Environment
+.env
+backend/.env
+
+# Database & uploads
+*.db
+*.db-shm
+*.db-wal
+uploads/
+backend/uploads/
+backend/models/*.joblib
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

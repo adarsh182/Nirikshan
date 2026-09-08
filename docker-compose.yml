@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fieldtest-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:////app/data/fieldtest.db
+      - JWT_SECRET=production-fieldtest-jwt-secret-replace-in-env
+      - SIGNING_SECRET=production-fieldtest-hmac-secret-replace-in-env
+      - UPLOAD_DIR=/app/data/uploads
+      - CORS_ORIGINS=*
+    volumes:
+      - backend_data:/app/data
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:8000
+    container_name: fieldtest-web
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  backend_data:

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50mm" height="30mm" viewBox="0 0 500 300">
+  <rect x="10" y="10" width="150" height="130" fill="#FFFFFF" stroke="#000000" stroke-width="2"/>
+  <rect x="175" y="10" width="150" height="130" fill="#767676" stroke="#000000" stroke-width="2"/>
+  <rect x="340" y="10" width="150" height="130" fill="#FF0000" stroke="#000000" stroke-width="2"/>
+  <rect x="10" y="160" width="150" height="130" fill="#00FF00" stroke="#000000" stroke-width="2"/>
+  <rect x="175" y="160" width="150" height="130" fill="#0000FF" stroke="#000000" stroke-width="2"/>
+  <rect x="340" y="160" width="150" height="130" fill="#000000" stroke="#000000" stroke-width="2"/>
+  <text x="250" y="295" text-anchor="middle" font-size="14" fill="#333">Field Test Reference Card  Print at 50×30mm</text>
+</svg>
