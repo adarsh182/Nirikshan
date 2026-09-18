@@ -2,7 +2,7 @@
 
 import json
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import numpy as np
 import cv2
@@ -232,7 +232,7 @@ def generate_synthetic_test_image(
 
     cv2.putText(img, "DIGITAL EVIDENCE RECORD", (W - 405, stamp_y + 22),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.40, (0, 200, 150), 1, cv2.LINE_AA)
-    timestamp_str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    timestamp_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     cv2.putText(img, f"CAPTURED: {timestamp_str}", (W - 405, stamp_y + 45),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.33, (180, 185, 190), 1, cv2.LINE_AA)
     cv2.putText(img, f"REAGENT: {kit_name.upper()}  |  SHA-256 SECURED", (W - 405, stamp_y + 65),
@@ -349,7 +349,7 @@ def seed() -> None:
 
         # Seed Realistic Field Records if count is low
         if db.query(TestRecord).count() < 5:
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
             marquis_kit = db.query(KitType).filter(KitType.name == "Marquis").first()
             mecke_kit = db.query(KitType).filter(KitType.name == "Mecke").first()
             scott_kit = db.query(KitType).filter(KitType.name == "Scott Reagent").first()

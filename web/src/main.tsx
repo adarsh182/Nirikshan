@@ -9,6 +9,7 @@ import TestLogPage from "./pages/TestLog";
 import TestDetailPage from "./pages/TestDetail";
 import CapturePage from "./pages/Capture";
 import ReferenceCardPage from "./pages/ReferenceCard";
+import ErrorBoundary from "./components/ErrorBoundary";
 import "./index.css";
 
 function LoginRedirect() {
@@ -18,19 +19,21 @@ function LoginRedirect() {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginRedirect />} />
-          <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/capture" element={<CapturePage />} />
-            <Route path="/tests" element={<TestLogPage />} />
-            <Route path="/tests/:id" element={<TestDetailPage />} />
-            <Route path="/reference-card" element={<ReferenceCardPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginRedirect />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/capture" element={<CapturePage />} />
+              <Route path="/tests" element={<TestLogPage />} />
+              <Route path="/tests/:id" element={<TestDetailPage />} />
+              <Route path="/reference-card" element={<ReferenceCardPage />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ErrorBoundary>
   </StrictMode>,
 );

@@ -324,6 +324,10 @@ const styles = StyleSheet.create({
     padding: Spacing.sm,
     borderRadius: Radius.sm,
     backgroundColor: Colors.backgroundSecondary,
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: "center",
+    alignItems: "center",
   },
   navRow: {
     flexDirection: "row",

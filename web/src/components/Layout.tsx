@@ -1,4 +1,5 @@
 import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
+import { Toaster } from "sonner";
 import { useAuth } from "../context/AuthContext";
 import NirikshanLogo from "./NirikshanLogo";
 
@@ -48,7 +49,8 @@ export default function Layout() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-sky-500 selection:text-white font-sans antialiased">
+    <div className="min-h-screen min-h-[100dvh] flex flex-col bg-slate-50 text-slate-900 selection:bg-sky-500 selection:text-white font-sans antialiased">
+      <Toaster richColors position="top-right" />
       {/* Top Tactical Status Bar - Clean Daylight Mode */}
       <header className="border-b border-slate-200 bg-white/95 backdrop-blur-md sticky top-0 z-40 print:hidden safe-top shadow-xs">
         <div className="max-w-7xl mx-auto px-3.5 sm:px-6 py-2.5 flex items-center justify-between">

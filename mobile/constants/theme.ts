@@ -92,3 +92,28 @@ export const Typography = {
     color: Colors.accentBlue,
   },
 };
+
+export const Motion = {
+  // Tactile press micro-interaction scale (Emil Kowalski / Apple HIG)
+  pressScale: 0.97,
+  // Timing budget (UI animations stay under 300ms)
+  duration: {
+    instant: 100,
+    fast: 160,
+    standard: 220,
+    ambient: 1200,
+  },
+  // React Native Native Driver spring configs
+  spring: {
+    // Crisp settle with zero overshoot for evidentiary cards
+    settle: {
+      tension: 120,
+      friction: 14,
+    },
+    // Subtle tactile press feedback
+    press: {
+      tension: 200,
+      friction: 20,
+    },
+  },
+};

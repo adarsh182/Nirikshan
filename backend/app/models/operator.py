@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import DateTime, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -15,6 +15,6 @@ class Operator(Base):
     name: Mapped[str] = mapped_column(String(200))
     role: Mapped[str] = mapped_column(String(50), default="officer")
     password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True, default="")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     test_records = relationship("TestRecord", back_populates="operator")

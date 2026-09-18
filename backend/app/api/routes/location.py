@@ -1,3 +1,4 @@
+import ipaddress
 import json
 import ssl
 import urllib.request
@@ -21,13 +22,12 @@ def detect_location(request: Request):
             break
 
     is_public = False
-    if client_ip and client_ip not in ("127.0.0.1", "::1", "localhost"):
-        if not (
-            client_ip.startswith("10.")
-            or client_ip.startswith("192.168.")
-            or client_ip.startswith("172.")
-        ):
-            is_public = True
+    if client_ip:
+        try:
+            ip_obj = ipaddress.ip_address(client_ip)
+            is_public = ip_obj.is_global
+        except ValueError:
+            is_public = False
 
     try:
         ctx = ssl.create_default_context()

@@ -31,7 +31,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between items-center px-4 py-8 safe-top safe-bottom selection:bg-sky-500 selection:text-white">
+    <div className="min-h-screen min-h-[100dvh] bg-slate-50 text-slate-900 flex flex-col justify-between items-center px-4 py-8 safe-top safe-bottom selection:bg-sky-500 selection:text-white">
       <div className="w-full max-w-md my-auto space-y-6">
         {/* Brand Shield & Title */}
         <div className="text-center space-y-2">

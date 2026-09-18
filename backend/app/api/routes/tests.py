@@ -1,5 +1,6 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
@@ -15,6 +16,9 @@ from app.models.operator import Operator
 from app.models.test_record import TestRecord
 from app.schemas import (
     DashboardStats,
+    SyncBatchRequest,
+    SyncBatchResponse,
+    SyncItemResult,
     TestRecordCreate,
     TestRecordList,
     TestRecordOut,
@@ -30,6 +34,8 @@ from app.services.integrity import (
 )
 from app.services.ml_classification import hybrid_classify
 from app.services.storage import image_exists, read_image, save_image
+
+MAX_IMAGE_SIZE = 15 * 1024 * 1024  # 15 MB max image upload size
 
 router = APIRouter(prefix="/tests", tags=["tests"])
 
@@ -86,7 +92,9 @@ async def create_test(
 
     image_bytes = await image.read()
     if not image_bytes:
-        raise HTTPException(status_code=400, detail="Empty image")
+        raise HTTPException(status_code=400, detail="Empty image file received")
+    if len(image_bytes) > MAX_IMAGE_SIZE:
+        raise HTTPException(status_code=413, detail="Image exceeds maximum allowed size (15MB)")
 
     image_hash = sha256_bytes(image_bytes)
     ext = ".jpg" if (image.filename or "").lower().endswith((".jpg", ".jpeg")) else ".png"
@@ -242,7 +250,7 @@ def dashboard_stats(
     positive = db.query(func.count(TestRecord.id)).filter(TestRecord.result == "positive").scalar() or 0
     negative = db.query(func.count(TestRecord.id)).filter(TestRecord.result == "negative").scalar() or 0
     inconclusive = db.query(func.count(TestRecord.id)).filter(TestRecord.result == "inconclusive").scalar() or 0
-    today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
     today = db.query(func.count(TestRecord.id)).filter(TestRecord.captured_at >= today_start).scalar() or 0
     return DashboardStats(
         total_tests=total,
@@ -251,6 +259,141 @@ def dashboard_stats(
         inconclusive_count=inconclusive,
         tests_today=today,
     )
+
+
+@router.post("/sync-batch", response_model=SyncBatchResponse)
+def sync_batch(
+    body: SyncBatchRequest,
+    db: Annotated[Session, Depends(get_db)],
+    operator: Annotated[Operator, Depends(get_current_operator)],
+) -> SyncBatchResponse:
+    results: list[SyncItemResult] = []
+    processed = 0
+    failed = 0
+
+    effective_operator_id = operator.id if operator else body.operator_id
+
+    for item in body.records:
+        try:
+            # Check idempotency by client_record_id or existing test id
+            existing = db.query(TestRecord).filter(TestRecord.id == item.client_record_id).first()
+            if existing:
+                results.append(
+                    SyncItemResult(
+                        client_record_id=item.client_record_id,
+                        server_record_id=existing.id,
+                        status="duplicate",
+                        signature=existing.signature,
+                        message="Record already committed to custody",
+                    )
+                )
+                processed += 1
+                continue
+
+            kit = db.query(KitType).filter(KitType.id == item.kit_type_id).first()
+            if not kit:
+                results.append(
+                    SyncItemResult(
+                        client_record_id=item.client_record_id,
+                        status="failed",
+                        message="Kit type not found",
+                    )
+                )
+                failed += 1
+                continue
+
+            # Process image if base64 provided
+            image_path = ""
+            image_hash = "0" * 64
+            if item.image_base64:
+                try:
+                    import base64
+
+                    raw_bytes = base64.b64decode(item.image_base64)
+                    if len(raw_bytes) > MAX_IMAGE_SIZE:
+                        results.append(
+                            SyncItemResult(
+                                client_record_id=item.client_record_id,
+                                status="failed",
+                                message="Image exceeds 15MB ceiling",
+                            )
+                        )
+                        failed += 1
+                        continue
+                    image_hash = sha256_bytes(raw_bytes)
+                    image_path = save_image(raw_bytes, ".jpg")
+                except Exception:
+                    pass
+
+            cap_dt = datetime.now(timezone.utc)
+            device_dt = None
+            if item.device_captured_at:
+                try:
+                    device_dt = datetime.fromisoformat(item.device_captured_at.replace("Z", "+00:00")).replace(tzinfo=None)
+                except ValueError:
+                    device_dt = None
+
+            record = TestRecord(
+                id=item.client_record_id,
+                operator_id=effective_operator_id,
+                kit_type_id=kit.id,
+                result=item.result,
+                confidence=item.confidence,
+                captured_at=cap_dt,
+                device_captured_at=device_dt,
+                latitude=round(float(item.latitude), 6),
+                longitude=round(float(item.longitude), 6),
+                location_accuracy_m=round(float(item.location_accuracy_m), 2) if item.location_accuracy_m else None,
+                location_source=item.location_source or "gps_hardware",
+                location_verified=bool(item.location_verified),
+                image_path=image_path,
+                image_hash=image_hash,
+                record_hash="",
+                signature="",
+                notes=item.notes or f"Offline sync from {body.device_id}",
+            )
+            db.add(record)
+            db.flush()
+
+            payload = build_record_payload(
+                record_id=record.id,
+                operator_id=record.operator_id,
+                kit_type_id=record.kit_type_id,
+                result=record.result,
+                captured_at=record.captured_at,
+                latitude=record.latitude,
+                longitude=record.longitude,
+                image_hash=record.image_hash,
+                location_source=record.location_source,
+                location_verified=record.location_verified,
+                location_accuracy_m=record.location_accuracy_m,
+            )
+            record.record_hash = compute_record_hash(payload)
+            record.signature = sign_record(record.record_hash)
+            db.commit()
+
+            results.append(
+                SyncItemResult(
+                    client_record_id=item.client_record_id,
+                    server_record_id=record.id,
+                    status="synced",
+                    signature=record.signature,
+                    message="Verified and committed to chain of custody",
+                )
+            )
+            processed += 1
+        except Exception as e:
+            db.rollback()
+            results.append(
+                SyncItemResult(
+                    client_record_id=item.client_record_id,
+                    status="failed",
+                    message=str(e),
+                )
+            )
+            failed += 1
+
+    return SyncBatchResponse(processed=processed, failed=failed, sync_results=results)
 
 
 @router.get("/{test_id}", response_model=TestRecordOut)
@@ -280,10 +423,13 @@ def verify_test(
     if not record:
         raise HTTPException(status_code=404, detail="Test not found")
 
+    is_telemetry_record = (not record.image_path) and (record.image_hash == "0" * 64)
     image_hash_match = False
     if image_exists(record.image_path):
         current_hash = sha256_bytes(read_image(record.image_path))
         image_hash_match = current_hash == record.image_hash
+    elif is_telemetry_record:
+        image_hash_match = True
 
     payload = build_record_payload(
         record_id=record.id,
@@ -303,7 +449,10 @@ def verify_test(
     signature_valid = verify_signature(record.record_hash, record.signature)
     valid = image_hash_match and record_hash_match and signature_valid
 
-    message = "Record integrity verified" if valid else "Record integrity check failed"
+    if valid:
+        message = "Record integrity verified (Telemetry Record)" if is_telemetry_record else "Record integrity verified"
+    else:
+        message = "Record integrity check failed"
     return VerificationResult(
         valid=valid,
         image_hash_match=image_hash_match,
@@ -374,8 +523,15 @@ def get_test_image(
     record = db.query(TestRecord).filter(TestRecord.id == test_id).first()
     if not record or not image_exists(record.image_path):
         raise HTTPException(status_code=404, detail="Image not found")
+
+    file_path = Path(record.image_path).resolve()
+    upload_root = Path(settings.upload_dir).resolve()
+    # Guard against path traversal outside the designated upload directory
+    if not file_path.is_file() or not str(file_path).startswith(str(upload_root)):
+        raise HTTPException(status_code=404, detail="Image not found or access denied")
+
     media = "image/jpeg" if record.image_path.endswith((".jpg", ".jpeg")) else "image/png"
-    return FileResponse(record.image_path, media_type=media)
+    return FileResponse(str(file_path), media_type=media)
 
 
 @router.delete("/{test_id}")
@@ -390,9 +546,11 @@ def delete_test(
 
     # Clean up physical image file if present
     try:
-        from pathlib import Path
-        if record.image_path and Path(record.image_path).exists():
-            Path(record.image_path).unlink(missing_ok=True)
+        if record.image_path:
+            img_path = Path(record.image_path).resolve()
+            upload_root = Path(settings.upload_dir).resolve()
+            if img_path.is_file() and str(img_path).startswith(str(upload_root)):
+                img_path.unlink(missing_ok=True)
     except Exception:
         pass
 

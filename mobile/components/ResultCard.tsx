@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
+import { View, Text, StyleSheet, Animated, AccessibilityInfo } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors, Radius, Spacing } from "../constants/theme";
+import { Colors, Radius, Spacing, Motion } from "../constants/theme";
 
 interface ResultCardProps {
   result: "positive" | "negative" | "inconclusive";
@@ -16,23 +16,35 @@ export default function ResultCard({
   swatchRgb,
   kitName,
 }: ResultCardProps) {
-  const scaleAnim = useRef(new Animated.Value(0.92)).current;
+  // Start from scale 0.96 (Emil Kowalski / Apple HIG: never scale from 0 or over-zoom)
+  const scaleAnim = useRef(new Animated.Value(0.96)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        friction: 6,
-        tension: 50,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacityAnim, {
-        toValue: 1,
-        duration: 350,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    AccessibilityInfo.isReduceMotionEnabled().then((reduceMotion) => {
+      if (reduceMotion) {
+        scaleAnim.setValue(1);
+        Animated.timing(opacityAnim, {
+          toValue: 1,
+          duration: Motion.duration.fast,
+          useNativeDriver: true,
+        }).start();
+      } else {
+        Animated.parallel([
+          Animated.spring(scaleAnim, {
+            toValue: 1,
+            friction: Motion.spring.settle.friction,
+            tension: Motion.spring.settle.tension,
+            useNativeDriver: true,
+          }),
+          Animated.timing(opacityAnim, {
+            toValue: 1,
+            duration: Motion.duration.standard,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      }
+    });
   }, [scaleAnim, opacityAnim]);
 
   const config = {

@@ -234,8 +234,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.card,
     borderWidth: 1,
     borderColor: Colors.cardBorder,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 20,
+    minHeight: 44,
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: Radius.md,
   },
   retryBtnText: {

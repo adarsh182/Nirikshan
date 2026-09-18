@@ -38,15 +38,35 @@
   --font-display: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+
+  /* Emil Kowalski / Apple HIG Timing Curves */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* Hallmark Discipline 5: Mobile Responsiveness non-negotiables */
+/* Mobile Responsiveness & Tactile Baseline (mobile-native / apple-design) */
 html, body {
   overflow-x: clip;
   background-color: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-body);
   -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+/* Prevent iOS auto-zoom on field focus */
+input, textarea, select {
+  font-size: 16px;
+}
+
+/* Prevent text selection on interactive controls during rapid tapping */
+button, [role="button"], .tactile-btn {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   touch-action: manipulation;
 }
 
@@ -59,21 +79,99 @@ html, body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Interactive touch target discipline (min 48px on mobile devices) */
+/* Interactive touch target discipline (min 44px on mobile devices) */
 @media (pointer: coarse) {
   .touch-target {
-    min-height: 48px;
-    min-width: 48px;
+    min-height: 44px;
+    min-width: 44px;
   }
 }
 
-/* Smooth micro-interactions */
+/* Responsive micro-interactions: transform 160ms with custom ease-out */
 .tactile-btn {
-  transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1), background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  transition: transform 160ms var(--ease-out), background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  will-change: transform;
 }
 .tactile-btn:active {
   transform: scale(0.97);
 }
+
+/* Modal Backdrop smooth fade-in */
+@keyframes backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.backdrop-enter {
+  animation: backdrop-fade-in 160ms var(--ease-out) forwards;
+}
+
+/* Physical entrance: scale from 0.95 with opacity (Emil Kowalski / Apple HIG) */
+@keyframes modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-enter {
+  animation: modal-scale-in 180ms var(--ease-out) forwards;
+}
+
+/* Forensic Result Dossier entrance: smooth vertical settle */
+@keyframes dossier-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dossier-enter {
+  animation: dossier-enter 200ms var(--ease-out) forwards;
+}
+
+/* Optical Camera Shutter Flash (180ms rapid decay) */
+@keyframes shutter-flash {
+  0% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-shutter-flash {
+  animation: shutter-flash 180ms var(--ease-out) forwards;
+}
+
+/* Dashboard KPI Card Cascade Stagger */
+@keyframes cascade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cascade-stagger-1 { animation: cascade-in 180ms var(--ease-out) both; animation-delay: 0ms; }
+.cascade-stagger-2 { animation: cascade-in 180ms var(--ease-out) both; animation-delay: 35ms; }
+.cascade-stagger-3 { animation: cascade-in 180ms var(--ease-out) both; animation-delay: 70ms; }
+.cascade-stagger-4 { animation: cascade-in 180ms var(--ease-out) both; animation-delay: 105ms; }
 
 /* Reticle pulsing for camera viewfinder */
 @keyframes reticle-pulse {
@@ -83,4 +181,107 @@ html, body {
 
 .animate-reticle {
   animation: reticle-pulse 2.4s ease-in-out infinite;
+}
+
+/* Simple opacity fade-in */
+@keyframes simple-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Accessibility: Reduced Motion Discipline (Emil Kowalski / Apple HIG)
+   Fewer and gentler animations: keep opacity/color changes for state comprehension,
+   eliminate spatial movement, scaling, and infinite pulsing. */
+@media (prefers-reduced-motion: reduce) {
+  .tactile-btn {
+    transition: background-color 100ms ease, border-color 100ms ease, box-shadow 100ms ease !important;
+  }
+  .tactile-btn:active {
+    transform: none !important;
+  }
+
+  .modal-enter {
+    animation: simple-fade-in 120ms ease forwards !important;
+    transform: none !important;
+  }
+
+  .dossier-enter {
+    animation: simple-fade-in 120ms ease forwards !important;
+    transform: none !important;
+  }
+
+  .cascade-stagger-1,
+  .cascade-stagger-2,
+  .cascade-stagger-3,
+  .cascade-stagger-4 {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .animate-reticle {
+    animation: none !important;
+    opacity: 0.85 !important;
+    transform: none !important;
+  }
+
+  .animate-shutter-flash {
+    animation: shutter-flash 100ms ease forwards !important;
+  }
+}
+
+/* Judicial Forensic Certificate Immobility & Flat Alignment Guard:
+   Strictly suppresses any rogue 3D tilt, rotation, animation, or vertical writing mode */
+.certificate-print-sheet,
+.certificate-print-sheet * {
+  transform: none !important;
+  rotate: 0deg !important;
+  writing-mode: horizontal-tb !important;
+  animation: none !important;
+  filter: none !important;
+}
+
+/* Dedicated Forensic Court Certificate Print Stylesheet */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt;
+    line-height: 1.4;
+  }
+
+  /* Hide screen-only interactive chrome */
+  nav,
+  header,
+  .no-print,
+  button,
+  .tactile-btn,
+  .screen-only {
+    display: none !important;
+  }
+
+  /* Show dedicated print certificate */
+  .certificate-print-sheet {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* High contrast borders and clean ink preservation */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
 }

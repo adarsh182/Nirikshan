@@ -109,3 +109,38 @@ class DashboardStats(BaseModel):
     negative_count: int
     inconclusive_count: int
     tests_today: int
+
+
+class SyncRecordItem(BaseModel):
+    client_record_id: str
+    kit_type_id: str
+    result: str
+    confidence: float
+    device_captured_at: str | None = None
+    latitude: float
+    longitude: float
+    location_accuracy_m: float | None = None
+    location_source: str = "gps_hardware"
+    location_verified: bool = True
+    image_base64: str | None = None
+    notes: str | None = None
+
+
+class SyncBatchRequest(BaseModel):
+    device_id: str
+    operator_id: str
+    records: list[SyncRecordItem]
+
+
+class SyncItemResult(BaseModel):
+    client_record_id: str
+    server_record_id: str | None = None
+    status: str  # synced, duplicate, failed
+    signature: str | None = None
+    message: str
+
+
+class SyncBatchResponse(BaseModel):
+    processed: int
+    failed: int
+    sync_results: list[SyncItemResult]

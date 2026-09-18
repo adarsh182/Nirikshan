@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import Boolean, DateTime, Float, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -11,11 +11,11 @@ class TestRecord(Base):
     __tablename__ = "test_records"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    operator_id: Mapped[str] = mapped_column(String(36), ForeignKey("operators.id"))
-    kit_type_id: Mapped[str] = mapped_column(String(36), ForeignKey("kit_types.id"))
-    result: Mapped[str] = mapped_column(String(20))  # positive, negative, inconclusive
+    operator_id: Mapped[str] = mapped_column(String(36), ForeignKey("operators.id"), index=True)
+    kit_type_id: Mapped[str] = mapped_column(String(36), ForeignKey("kit_types.id"), index=True)
+    result: Mapped[str] = mapped_column(String(20), index=True)  # positive, negative, inconclusive
     confidence: Mapped[float] = mapped_column(Float)
-    captured_at: Mapped[datetime] = mapped_column(DateTime)
+    captured_at: Mapped[datetime] = mapped_column(DateTime, index=True)
     device_captured_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     latitude: Mapped[float] = mapped_column(Float)
     longitude: Mapped[float] = mapped_column(Float)
@@ -28,7 +28,7 @@ class TestRecord(Base):
     signature: Mapped[str] = mapped_column(String(64))
     classification_details: Mapped[str | None] = mapped_column(Text, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     operator = relationship("Operator", back_populates="test_records")
     kit_type = relationship("KitType", back_populates="test_records")

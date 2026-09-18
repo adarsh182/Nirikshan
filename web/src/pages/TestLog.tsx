@@ -1,6 +1,7 @@
 /* Hallmark · genre: modern-minimal · macrostructure: Workbench · theme: cobalt · design-system: design.md · designed-as-app */
 import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import ResultBadge from "../components/ResultBadge";
 import { getTests, deleteTest } from "../services/api";
 import type { TestRecord } from "../types";
@@ -43,10 +44,15 @@ export default function TestLogPage() {
       await deleteTest(deleteTarget.id);
       setTests((prev) => prev.filter((t) => t.id !== deleteTarget.id));
       setTotal((prev) => Math.max(0, prev - 1));
+      toast.success("Dossier Purged", {
+        description: `Evidence #${deleteTarget.id.slice(0, 8)} removed from active register.`,
+      });
       setDeleteTarget(null);
     } catch (err) {
       console.error("Failed to delete test record:", err);
-      alert("Failed to delete evidence record.");
+      toast.error("Purge Failed", {
+        description: "Failed to delete evidence record from registry.",
+      });
     } finally {
       setDeleting(false);
     }
@@ -390,8 +396,9 @@ export default function TestLogPage() {
                             <button
                               type="button"
                               onClick={() => setDeleteTarget(test)}
-                              className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                              className="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors touch-target min-h-[44px] min-w-[44px] inline-flex items-center justify-center"
                               title="Delete Evidence Record"
+                              aria-label="Delete evidence record"
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
                                 <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clipRule="evenodd" />
@@ -436,8 +443,8 @@ export default function TestLogPage() {
 
       {/* Permanent Deletion Confirmation Modal */}
       {deleteTarget && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 safe-bottom">
-          <div className="bg-white border border-rose-200 rounded-xl p-5 max-w-md w-full space-y-4 shadow-xl">
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 safe-bottom backdrop-enter">
+          <div className="bg-white border border-rose-200 rounded-xl p-5 max-w-md w-full space-y-4 shadow-xl modal-enter">
             <div className="flex items-center gap-3 text-rose-600">
               <div className="w-10 h-10 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-rose-600">

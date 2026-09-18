@@ -83,3 +83,38 @@ export interface LocationData {
   source?: string;
   verified?: boolean;
 }
+
+export interface SyncRecordItem {
+  client_record_id: string;
+  kit_type_id: string;
+  result: "positive" | "negative" | "inconclusive";
+  confidence: number;
+  device_captured_at?: string | null;
+  latitude: number;
+  longitude: number;
+  location_accuracy_m?: number | null;
+  location_source?: string;
+  location_verified?: boolean;
+  image_base64?: string | null;
+  notes?: string | null;
+}
+
+export interface SyncBatchRequest {
+  device_id: string;
+  operator_id: string;
+  records: SyncRecordItem[];
+}
+
+export interface SyncItemResult {
+  client_record_id: string;
+  server_record_id?: string | null;
+  status: "synced" | "duplicate" | "failed";
+  signature?: string | null;
+  message: string;
+}
+
+export interface SyncBatchResponse {
+  processed: number;
+  failed: number;
+  sync_results: SyncItemResult[];
+}

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { getKits, submitTest, detectLocation } from "../services/api";
 import ResultBadge from "../components/ResultBadge";
 import type { KitType, TestRecord } from "../types";
@@ -52,6 +53,7 @@ export default function CapturePage() {
   // Camera state
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const currentDeviceIdRef = useRef<string | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
@@ -67,6 +69,7 @@ export default function CapturePage() {
   // Location & Metadata
   const [location, setLocation] = useState<LocationState>(getInitialLocation);
   const [locating, setLocating] = useState(false);
+  const [syncSuccess, setSyncSuccess] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
   const [capturedAt, setCapturedAt] = useState<string>("");
@@ -144,6 +147,8 @@ export default function CapturePage() {
       }));
       setLocationError(null);
       setLocating(false);
+      setSyncSuccess(true);
+      setTimeout(() => setSyncSuccess(false), 1800);
     };
 
     let permState: PermissionState | null = null;
@@ -211,6 +216,8 @@ export default function CapturePage() {
             source: "network_ip_approximate",
             verified: false,
           });
+          setSyncSuccess(true);
+          setTimeout(() => setSyncSuccess(false), 1800);
         }
       } catch (netErr) {
         console.warn("Network IP location failed:", netErr);
@@ -251,13 +258,13 @@ export default function CapturePage() {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const videoInputs = devices.filter((d) => d.kind === "videoinput");
       setVideoDevices(videoInputs);
-      if (videoInputs.length > 0 && !selectedDeviceId) {
-        setSelectedDeviceId(videoInputs[0].deviceId);
+      if (videoInputs.length > 0) {
+        setSelectedDeviceId((prev) => prev || currentDeviceIdRef.current || videoInputs[0].deviceId);
       }
     } catch (e) {
       console.warn("Could not enumerate video devices:", e);
     }
-  }, [selectedDeviceId]);
+  }, []);
 
   // Start Camera Stream
   const startCamera = useCallback(async (deviceId?: string) => {
@@ -282,15 +289,29 @@ export default function CapturePage() {
 
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       streamRef.current = stream;
+      const track = stream.getVideoTracks()[0];
+      const activeId = track?.getSettings()?.deviceId || deviceId || null;
+      currentDeviceIdRef.current = activeId;
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+        try {
+          await videoRef.current.play();
+        } catch (playErr) {
+          // If play was superseded by another stream load or fast unmount, safely ignore AbortError
+          if (playErr instanceof DOMException && playErr.name === "AbortError") {
+            return;
+          }
+          throw playErr;
+        }
       }
 
       setCameraActive(true);
       await enumerateCameras();
     } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        return;
+      }
       console.error("Camera access error:", err);
       const msg =
         err instanceof DOMException && err.name === "NotAllowedError"
@@ -312,13 +333,17 @@ export default function CapturePage() {
     if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
+    currentDeviceIdRef.current = null;
     setCameraActive(false);
   }, []);
 
   // Manage camera on mode change or when captured
   useEffect(() => {
     if (mode === "camera" && !capturedBlob && !submitResult) {
-      startCamera(selectedDeviceId || undefined);
+      // Don't re-invoke startCamera if already streaming on the currently active device
+      if (!streamRef.current || (selectedDeviceId && currentDeviceIdRef.current !== selectedDeviceId)) {
+        startCamera(selectedDeviceId || undefined);
+      }
     } else {
       stopCamera();
     }
@@ -368,7 +393,9 @@ export default function CapturePage() {
   // Handle File Input or Drag-Drop
   const processImageFile = (file: File) => {
     if (!file.type.startsWith("image/")) {
-      alert("Please upload a valid image file (JPG, PNG, WEBP).");
+      toast.error("Invalid File Type", {
+        description: "Please upload a valid image file (JPG, PNG, WEBP).",
+      });
       return;
     }
 
@@ -505,7 +532,7 @@ export default function CapturePage() {
 
       {/* Result Dossier Modal/Card (Shown after successful analysis) */}
       {submitResult && (
-        <div className="bg-white border border-emerald-500/40 rounded-xl p-5 sm:p-6 space-y-6 shadow-sm">
+        <div className="bg-white border border-emerald-500/40 rounded-xl p-5 sm:p-6 space-y-6 shadow-sm dossier-enter">
           <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
@@ -660,7 +687,7 @@ export default function CapturePage() {
                       <div
                         key={kit.id}
                         onClick={() => setSelectedKitId(kit.id)}
-                        className={`p-3 rounded-lg border cursor-pointer transition-all tactile-btn ${
+                        className={`p-3 rounded-lg border cursor-pointer transition-colors tactile-btn ${
                           isSelected
                             ? "bg-sky-50/80 border-sky-500 shadow-xs ring-1 ring-sky-500/30"
                             : "bg-slate-50 border-slate-200 hover:border-slate-300 hover:bg-slate-100/70"
@@ -710,13 +737,70 @@ export default function CapturePage() {
                   type="button"
                   onClick={() => requestLocation(true)}
                   disabled={locating}
-                  className="px-2.5 py-1.5 rounded-md bg-sky-600 hover:bg-sky-500 text-white text-[11px] font-mono font-bold flex items-center gap-1.5 transition disabled:opacity-50 tactile-btn touch-target shadow-xs"
+                  className={`min-w-[118px] h-8 px-2.5 rounded-md text-white text-[11px] font-mono font-bold flex items-center justify-center gap-1.5 transition-colors duration-160 tactile-btn touch-target shadow-xs select-none ${
+                    syncSuccess
+                      ? "bg-emerald-600 hover:bg-emerald-500"
+                      : "bg-sky-600 hover:bg-sky-500"
+                  } disabled:opacity-85 disabled:cursor-not-allowed`}
                   title="Request device GPS fix"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={`w-3.5 h-3.5 ${locating ? "animate-spin" : ""}`}>
-                    <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433 1.244-.77 2.946-2.096 4.358-4.004C17.15 12.44 18 9.948 18 7.5A8 8 0 002 7.5c0 2.448.85 4.94 2.27 6.848 1.412 1.908 3.114 3.234 4.358 4.004.311.193.571.337.757.433a5.741 5.741 0 00.299.148l.006.003zM10 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7z" clipRule="evenodd" />
-                  </svg>
-                  <span>{locating ? "ACQUIRING..." : "GPS SYNC"}</span>
+                  {locating ? (
+                    <>
+                      <svg
+                        className="animate-spin w-3.5 h-3.5 text-white shrink-0"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                        />
+                        <path
+                          className="opacity-90"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                      <span className="tracking-tight">SYNCING...</span>
+                    </>
+                  ) : syncSuccess ? (
+                    <>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="w-3.5 h-3.5 shrink-0 text-white"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="tracking-tight">LOCKED</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="w-3.5 h-3.5 shrink-0"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433 1.244-.77 2.946-2.096 4.358-4.004C17.15 12.44 18 9.948 18 7.5A8 8 0 002 7.5c0 2.448.85 4.94 2.27 6.848 1.412 1.908 3.114 3.234 4.358 4.004.311.193.571.337.757.433a5.741 5.741 0 00.299.148l.006.003zM10 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="tracking-tight">GPS SYNC</span>
+                    </>
+                  )}
                 </button>
               </div>
 
@@ -741,6 +825,8 @@ export default function CapturePage() {
                           verified: true,
                         });
                         setLocationError(null);
+                        setSyncSuccess(true);
+                        setTimeout(() => setSyncSuccess(false), 1800);
                       }}
                       className="font-bold text-sky-700 hover:underline"
                     >
@@ -750,12 +836,22 @@ export default function CapturePage() {
                 </div>
               )}
 
-              <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2 font-mono">
+              <div
+                className={`bg-slate-50 border rounded-lg p-3 space-y-2 font-mono transition-colors duration-300 ${
+                  syncSuccess
+                    ? "border-emerald-500/60 bg-emerald-50/20"
+                    : locating
+                    ? "border-sky-400/60 bg-sky-50/20"
+                    : "border-slate-200"
+                }`}
+              >
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-1.5">
                     <span
-                      className={`w-2 h-2 rounded-full ${
-                        location.verified
+                      className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                        locating
+                          ? "bg-sky-500 animate-pulse"
+                          : location.verified
                           ? "bg-emerald-500"
                           : location.source === "manual_override"
                           ? "bg-sky-500"
@@ -763,7 +859,9 @@ export default function CapturePage() {
                       }`}
                     />
                     <span className="text-[11px] font-semibold text-slate-800">
-                      {location.verified
+                      {locating
+                        ? "QUERYING SATELLITES..."
+                        : location.verified
                         ? "GPS LOCKED"
                         : location.source === "manual_override"
                         ? "MANUAL OVERRIDE"
@@ -910,7 +1008,7 @@ export default function CapturePage() {
             <div className="relative bg-slate-950 rounded-xl border border-slate-800 overflow-hidden min-h-[440px] flex items-center justify-center shadow-lg">
               {/* Shutter visual flash effect */}
               {shutterFlash && (
-                <div className="absolute inset-0 bg-white z-50 pointer-events-none animate-out fade-out duration-200" />
+                <div className="absolute inset-0 bg-white z-50 pointer-events-none animate-shutter-flash" />
               )}
 
               {/* Case A: Captured Image Review */}
@@ -1051,7 +1149,7 @@ export default function CapturePage() {
                         <button
                           type="button"
                           onClick={handleCaptureSnapshot}
-                          className="w-18 h-18 rounded-full bg-slate-900/80 backdrop-blur-md p-1.5 shadow-2xl border-2 border-sky-400/80 active:scale-90 transition-transform flex items-center justify-center group tactile-btn"
+                          className="w-18 h-18 rounded-full bg-slate-900/80 backdrop-blur-md p-1.5 shadow-2xl border-2 border-sky-400/80 flex items-center justify-center group tactile-btn"
                           title="Capture Evidence Photo"
                           aria-label="Capture Evidence Photo"
                         >

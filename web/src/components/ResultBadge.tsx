@@ -59,6 +59,8 @@ export default function ResultBadge({
 
   return (
     <span
+      role="status"
+      aria-label={`Test outcome: ${current.label}`}
       className={`inline-flex items-center font-mono font-semibold uppercase rounded-md border whitespace-nowrap select-none ${sizeClasses} ${current.badgeClass} ${className}`}
     >
       {showIcon && (

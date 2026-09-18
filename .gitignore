@@ -34,3 +34,11 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Agent files & internal plans
+.agents/
+plans/
+AGENTS.md
+CONSTRAINTS.md
+skills-lock.json
+debug_crop*.png

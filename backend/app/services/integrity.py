@@ -1,7 +1,7 @@
 import hashlib
 import hmac
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 import bcrypt
@@ -22,7 +22,7 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 def create_access_token(data: dict[str, Any]) -> str:
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=settings.jwt_expire_minutes)
+    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.jwt_expire_minutes)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, settings.jwt_secret, algorithm=ALGORITHM)
 
@@ -43,7 +43,7 @@ def build_record_payload(
     operator_id: str,
     kit_type_id: str,
     result: str,
-    captured_at: datetime,
+    captured_at: datetime | str,
     latitude: float,
     longitude: float,
     image_hash: str,
@@ -51,18 +51,26 @@ def build_record_payload(
     location_verified: bool = True,
     location_accuracy_m: float | None = None,
 ) -> dict[str, Any]:
+    lat = round(float(latitude), 6)
+    lon = round(float(longitude), 6)
+    acc = round(float(location_accuracy_m), 2) if location_accuracy_m is not None else None
+    if isinstance(captured_at, datetime):
+        cap_iso = captured_at.replace(tzinfo=None).isoformat()
+    else:
+        cap_iso = str(captured_at).replace("+00:00", "").replace("Z", "")
+
     return {
-        "id": record_id,
-        "operator_id": operator_id,
-        "kit_type_id": kit_type_id,
-        "result": result,
-        "captured_at": captured_at.isoformat(),
-        "latitude": latitude,
-        "longitude": longitude,
-        "image_hash": image_hash,
-        "location_source": location_source,
-        "location_verified": location_verified,
-        "location_accuracy_m": location_accuracy_m,
+        "id": str(record_id),
+        "operator_id": str(operator_id),
+        "kit_type_id": str(kit_type_id),
+        "result": str(result),
+        "captured_at": cap_iso,
+        "latitude": lat,
+        "longitude": lon,
+        "image_hash": str(image_hash),
+        "location_source": str(location_source),
+        "location_verified": bool(location_verified),
+        "location_accuracy_m": acc,
     }
 
 

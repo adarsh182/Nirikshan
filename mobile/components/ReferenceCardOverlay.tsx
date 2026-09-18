@@ -1,40 +1,124 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
-import { Colors } from "../constants/theme";
+import { View, Text, StyleSheet, Animated, Image, Easing, AccessibilityInfo } from "react-native";
+import { Colors, Motion } from "../constants/theme";
 
-export default function ReferenceCardOverlay() {
+interface ReferenceCardOverlayProps {
+  cardLocked?: boolean;
+  isLevel?: boolean;
+  reactionTimeLeft?: number | null;
+  lightingStatus?: "optimal" | "low" | "glare";
+}
+
+export default function ReferenceCardOverlay({
+  cardLocked = false,
+  isLevel = true,
+  reactionTimeLeft = null,
+  lightingStatus = "optimal",
+}: ReferenceCardOverlayProps) {
   const pulseAnim = useRef(new Animated.Value(0.6)).current;
 
   useEffect(() => {
-    const animation = Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 1200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 0.6,
-          duration: 1200,
-          useNativeDriver: true,
-        }),
-      ]),
-    );
-    animation.start();
-    return () => animation.stop();
+    let animation: Animated.CompositeAnimation | null = null;
+
+    AccessibilityInfo.isReduceMotionEnabled().then((reduceMotion) => {
+      if (reduceMotion) {
+        pulseAnim.setValue(0.85);
+        return;
+      }
+
+      // Sinusoidal easing for authentic optical reticle breathing
+      animation = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: Motion.duration.ambient,
+            easing: Easing.inOut(Easing.sin),
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 0.6,
+            duration: Motion.duration.ambient,
+            easing: Easing.inOut(Easing.sin),
+            useNativeDriver: true,
+          }),
+        ]),
+      );
+      animation.start();
+    });
+
+    return () => {
+      if (animation) {
+        animation.stop();
+      }
+    };
   }, [pulseAnim]);
+
+  const cornerColor = cardLocked ? "#10b981" : Colors.primary;
+  const cardBorderColor = cardLocked ? "rgba(16, 185, 129, 0.8)" : "rgba(56, 189, 248, 0.5)";
 
   return (
     <View style={styles.container} pointerEvents="none">
+      {/* High-Resolution Tactical HUD Vector Asset */}
+      <Image
+        source={require("../assets/hud_viewfinder_overlay.png")}
+        style={styles.hudBackdrop}
+        resizeMode="cover"
+      />
+
+      {/* Top Quality Gate Status Banner */}
+      <View style={styles.qualityGateContainer}>
+        {reactionTimeLeft !== null && reactionTimeLeft > 0 ? (
+          <View style={[styles.statusPill, styles.pillAmber]}>
+            <Text style={styles.statusPillText}>
+              REACTION KINETICS: {reactionTimeLeft}s
+            </Text>
+          </View>
+        ) : cardLocked ? (
+          <View style={[styles.statusPill, styles.pillGreen]}>
+            <Text style={styles.statusPillText}>✓ CALIBRATION LOCKED</Text>
+          </View>
+        ) : (
+          <View style={[styles.statusPill, styles.pillNeutral]}>
+            <Text style={styles.statusPillText}>ALIGN SPECIMEN & CARD</Text>
+          </View>
+        )}
+
+        {lightingStatus === "low" && (
+          <View style={[styles.statusPill, styles.pillWarning]}>
+            <Text style={styles.statusPillText}>LOW LIGHT — USE TORCH</Text>
+          </View>
+        )}
+      </View>
+
+      {/* Artificial Horizon Gyro Reticle */}
+      <View style={styles.horizonContainer}>
+        <View
+          style={[
+            styles.horizonCircle,
+            isLevel ? styles.horizonLevel : styles.horizonTilted,
+          ]}
+        >
+          <View
+            style={[
+              styles.horizonDot,
+              isLevel ? styles.horizonDotLevel : styles.horizonDotTilted,
+            ]}
+          />
+        </View>
+        <Text style={[styles.horizonLabel, isLevel ? styles.textGreen : styles.textAmber]}>
+          {isLevel ? "PLANAR LEVEL ±0°" : "TILT HORIZONTAL"}
+        </Text>
+      </View>
+
       {/* Test kit guide frame (left) */}
       <View style={styles.testKitFrame}>
         <View style={styles.labelContainer}>
           <Text style={styles.labelText}>TEST ZONE</Text>
         </View>
-        <Animated.View style={[styles.corner, styles.topLeft, { opacity: pulseAnim }]} />
-        <Animated.View style={[styles.corner, styles.topRight, { opacity: pulseAnim }]} />
-        <Animated.View style={[styles.corner, styles.bottomLeft, { opacity: pulseAnim }]} />
-        <Animated.View style={[styles.corner, styles.bottomRight, { opacity: pulseAnim }]} />
+        <Animated.View style={[styles.corner, styles.topLeft, { borderColor: cornerColor, opacity: pulseAnim }]} />
+        <Animated.View style={[styles.corner, styles.topRight, { borderColor: cornerColor, opacity: pulseAnim }]} />
+        <Animated.View style={[styles.corner, styles.bottomLeft, { borderColor: cornerColor, opacity: pulseAnim }]} />
+        <Animated.View style={[styles.corner, styles.bottomRight, { borderColor: cornerColor, opacity: pulseAnim }]} />
         <View style={styles.centerTarget}>
           <View style={styles.crosshairH} />
           <View style={styles.crosshairV} />
@@ -42,14 +126,16 @@ export default function ReferenceCardOverlay() {
       </View>
 
       {/* Reference card guide frame (right) */}
-      <View style={styles.cardFrame}>
+      <View style={[styles.cardFrame, { borderColor: cardBorderColor }]}>
         <View style={styles.labelContainer}>
-          <Text style={styles.labelText}>COLOR CALIBRATION CARD</Text>
+          <Text style={styles.labelText}>
+            {cardLocked ? "CARD 100% LOCKED" : "COLOR CALIBRATION CARD"}
+          </Text>
         </View>
-        <Animated.View style={[styles.corner, styles.topLeft, { opacity: pulseAnim }]} />
-        <Animated.View style={[styles.corner, styles.topRight, { opacity: pulseAnim }]} />
-        <Animated.View style={[styles.corner, styles.bottomLeft, { opacity: pulseAnim }]} />
-        <Animated.View style={[styles.corner, styles.bottomRight, { opacity: pulseAnim }]} />
+        <Animated.View style={[styles.corner, styles.topLeft, { borderColor: cornerColor, opacity: pulseAnim }]} />
+        <Animated.View style={[styles.corner, styles.topRight, { borderColor: cornerColor, opacity: pulseAnim }]} />
+        <Animated.View style={[styles.corner, styles.bottomLeft, { borderColor: cornerColor, opacity: pulseAnim }]} />
+        <Animated.View style={[styles.corner, styles.bottomRight, { borderColor: cornerColor, opacity: pulseAnim }]} />
 
         <View style={styles.patchRow}>
           <View style={[styles.patch, { backgroundColor: "#ffffff" }]}>
@@ -83,6 +169,91 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: "center",
   },
+  hudBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    width: "100%",
+    height: "100%",
+    opacity: 0.85,
+  },
+  qualityGateContainer: {
+    position: "absolute",
+    top: 90,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    gap: 6,
+  },
+  statusPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
+    borderWidth: 1,
+  },
+  statusPillText: {
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+    fontFamily: "System",
+  },
+  pillGreen: {
+    backgroundColor: "rgba(6, 78, 59, 0.9)",
+    borderColor: "rgba(52, 211, 153, 0.6)",
+  },
+  pillAmber: {
+    backgroundColor: "rgba(120, 53, 15, 0.9)",
+    borderColor: "rgba(251, 191, 36, 0.6)",
+  },
+  pillWarning: {
+    backgroundColor: "rgba(127, 29, 29, 0.9)",
+    borderColor: "rgba(248, 113, 113, 0.6)",
+  },
+  pillNeutral: {
+    backgroundColor: "rgba(15, 23, 42, 0.85)",
+    borderColor: "rgba(148, 163, 184, 0.3)",
+  },
+  horizonContainer: {
+    position: "absolute",
+    top: 140,
+    alignSelf: "center",
+    alignItems: "center",
+  },
+  horizonCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  horizonLevel: {
+    borderColor: "rgba(52, 211, 153, 0.8)",
+  },
+  horizonTilted: {
+    borderColor: "rgba(251, 191, 36, 0.8)",
+  },
+  horizonDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  horizonDotLevel: {
+    backgroundColor: "#10b981",
+  },
+  horizonDotTilted: {
+    backgroundColor: "#f59e0b",
+  },
+  horizonLabel: {
+    fontSize: 8,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+    marginTop: 2,
+  },
+  textGreen: {
+    color: "#34d399",
+  },
+  textAmber: {
+    color: "#fbbf24",
+  },
   testKitFrame: {
     position: "absolute",
     left: "6%",
@@ -101,7 +272,6 @@ const styles = StyleSheet.create({
     bottom: "22%",
     width: "44%",
     height: "22%",
-    borderColor: "rgba(56, 189, 248, 0.5)",
     borderWidth: 1.5,
     borderStyle: "dashed",
     borderRadius: 8,
@@ -166,7 +336,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 16,
     height: 16,
-    borderColor: Colors.primary,
   },
   topLeft: { top: -2, left: -2, borderTopWidth: 3, borderLeftWidth: 3, borderTopLeftRadius: 4 },
   topRight: { top: -2, right: -2, borderTopWidth: 3, borderRightWidth: 3, borderTopRightRadius: 4 },

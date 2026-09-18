@@ -16,12 +16,22 @@ Digital companion for colorimetric field drug testing. Captures test result imag
 
 ```bash
 cd backend
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
+
+# Create virtual environment (macOS/Linux: python3, Windows: python)
+python3 -m venv .venv        # Windows: python -m venv .venv
+
+# Activate virtual environment
+source .venv/bin/activate    # Windows: .venv\Scripts\activate
+
 pip install -r requirements.txt
 cp .env.example .env
-python scripts/seed.py
-python scripts/train_ml.py   # optional: enables hybrid ML classification
+python3 scripts/seed.py
+python3 scripts/train_ml.py   # optional: enables hybrid ML classification
+
+# Run automated tests
+pytest
+
+# Start development server
 uvicorn app.main:app --reload --port 8000
 ```
 

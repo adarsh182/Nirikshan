@@ -36,3 +36,19 @@ def init_db() -> None:
     from app.models import KitType, Operator, TestRecord  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
+
+    if settings.database_url.startswith("sqlite"):
+        with engine.connect() as conn:
+            result = conn.exec_driver_sql("PRAGMA table_info(test_records)")
+            existing_cols = {row[1] for row in result.fetchall()}
+            if existing_cols:
+                col_defs = [
+                    ("device_captured_at", "DATETIME"),
+                    ("location_accuracy_m", "FLOAT"),
+                    ("location_source", "VARCHAR(50) DEFAULT 'gps_hardware'"),
+                    ("location_verified", "BOOLEAN DEFAULT 1"),
+                ]
+                for col_name, col_type in col_defs:
+                    if col_name not in existing_cols:
+                        conn.exec_driver_sql(f"ALTER TABLE test_records ADD COLUMN {col_name} {col_type}")
+                conn.commit()

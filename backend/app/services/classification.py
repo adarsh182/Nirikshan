@@ -5,27 +5,11 @@ from typing import Any
 import cv2
 import numpy as np
 
-# Known sRGB reference patch colors (BGR for OpenCV)
-REFERENCE_PATCHES_BGR = [
-    (255, 255, 255),  # white
-    (118, 118, 118),  # 18% gray
-    (0, 0, 255),      # red
-    (0, 255, 0),      # green
-    (255, 0, 0),      # blue
-    (0, 0, 0),        # black
-]
-
-
 @dataclass
 class ClassificationResult:
     result: str
     confidence: float
     details: dict[str, Any]
-
-
-def _bgr_to_lab(color_bgr: tuple[int, int, int]) -> np.ndarray:
-    arr = np.uint8([[list(color_bgr)]])
-    return cv2.cvtColor(arr, cv2.COLOR_BGR2LAB)[0][0].astype(float)
 
 
 def _lab_distance(a: np.ndarray, b: np.ndarray) -> float:

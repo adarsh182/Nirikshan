@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
@@ -7,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.database.connection import get_db
 from app.models.operator import Operator
 from app.schemas import LoginRequest, OperatorOut, TokenResponse
-from app.services.integrity import create_access_token, decode_access_token, verify_password
+from app.services.integrity import create_access_token, decode_access_token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -45,6 +44,14 @@ def get_current_operator(
         operator = db.query(Operator).filter(Operator.id == query_op_id).first()
         if operator:
             return operator
+
+    query_token = request.query_params.get("token")
+    if query_token:
+        payload = decode_access_token(query_token)
+        if payload and "sub" in payload:
+            operator = db.query(Operator).filter(Operator.id == payload["sub"]).first()
+            if operator:
+                return operator
 
     # 4. Fallback to first available operator in database
     operator = db.query(Operator).first()
