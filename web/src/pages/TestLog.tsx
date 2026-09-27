@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import ResultBadge from "../components/ResultBadge";
+import DossierButton from "../components/DossierButton";
 import { getTests, deleteTest } from "../services/api";
 import type { TestRecord } from "../types";
 
@@ -112,17 +113,17 @@ export default function TestLogPage() {
   return (
     <div className="space-y-5 sm:space-y-6">
       {/* Header & Quick Export - Light Mode */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 pb-4 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 pb-4 border-b border-slate-200/80">
         <div>
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-mono uppercase tracking-widest text-sky-700 font-semibold">
-              CHAIN OF CUSTODY LEDGER
+              Chain of Custody Ledger
             </span>
             <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 font-mono font-semibold">
-              {total} RECORDS
+              {total} records
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 font-mono mt-0.5">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 font-display mt-0.5">
             Evidence Register
           </h1>
           <p className="text-xs text-slate-500 mt-1 max-w-xl">
@@ -130,10 +131,10 @@ export default function TestLogPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 pt-1 sm:pt-0">
+        <div className="flex items-center gap-2.5 w-full sm:w-auto pt-1 sm:pt-0">
           <Link
             to="/capture"
-            className="flex-1 sm:flex-initial px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-mono font-bold tracking-wider uppercase shadow-xs transition-all tactile-btn touch-target flex items-center justify-center gap-1.5 whitespace-nowrap"
+            className="hidden md:inline-flex apple-btn-primary px-4 py-2.5 items-center justify-center gap-1.5 whitespace-nowrap touch-target"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
               <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
@@ -144,7 +145,7 @@ export default function TestLogPage() {
           <button
             onClick={handleExportCsv}
             disabled={tests.length === 0}
-            className="px-3.5 py-2.5 bg-white hover:bg-slate-50 border border-slate-200 disabled:opacity-40 text-slate-700 rounded-lg text-xs font-mono font-semibold transition-colors tactile-btn touch-target flex items-center justify-center whitespace-nowrap gap-1.5 shadow-xs"
+            className="w-full sm:w-auto apple-btn-secondary px-3.5 py-2.5 disabled:opacity-40 flex items-center justify-center whitespace-nowrap gap-1.5 touch-target"
             title="Download CSV file for court evidence reporting"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-slate-500">
@@ -156,8 +157,8 @@ export default function TestLogPage() {
         </div>
       </div>
 
-      {/* Filter and Search Controls - Light Mode */}
-      <div className="bg-white border border-slate-200 rounded-xl p-3 sm:p-4 space-y-3 shadow-xs">
+      {/* Filter and Search Controls */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-3.5 sm:p-4 space-y-3 shadow-xs">
         <div className="relative">
           <input
             type="text"
@@ -167,23 +168,23 @@ export default function TestLogPage() {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-3.5 pr-9 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-sky-500 font-sans shadow-2xs"
+            className="w-full bg-slate-50/70 border border-slate-200/90 rounded-xl pl-3.5 pr-9 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all font-sans shadow-2xs"
           />
           {search && (
             <button
               onClick={() => setSearch("")}
-              className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 text-xs"
-              aria-label="Clear search"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-700 text-xs tactile-btn touch-target rounded-full hover:bg-slate-200/60"
+              aria-label="Clear search query"
             >
               ✕
             </button>
           )}
         </div>
 
-        {/* Touch-Friendly Outcome Filter Tabs */}
+        {/* Outcome Filter Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider mr-1 hidden sm:inline font-semibold">
-            FILTER:
+            Filter:
           </span>
           {filterOptions.map((opt) => {
             const isActive = resultFilter === opt.value;
@@ -194,10 +195,10 @@ export default function TestLogPage() {
                   setResultFilter(opt.value);
                   setPage(1);
                 }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium whitespace-nowrap transition-colors tactile-btn touch-target ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all duration-150 tactile-btn touch-target ${
                   isActive
-                    ? "bg-sky-600 text-white font-bold shadow-xs"
-                    : "bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
+                    ? "bg-slate-900 text-white shadow-2xs"
+                    : "bg-slate-100/80 hover:bg-slate-200/80 text-slate-600 hover:text-slate-900"
                 }`}
               >
                 {opt.label}
@@ -256,17 +257,17 @@ export default function TestLogPage() {
                     <ResultBadge result={test.result} size="sm" />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 text-[11px] font-mono text-slate-700">
+                  <div className="grid grid-cols-2 gap-2 text-[11px] font-mono text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
                     <div>
-                      <span className="text-[9px] text-slate-500 uppercase block font-semibold">OPERATOR BADGE</span>
+                      <span className="text-[9px] text-slate-500 uppercase block font-semibold">BADGE ID</span>
                       <span className="text-sky-700 font-semibold">{test.operator_badge_id || "OFF-001"}</span>
                     </div>
                     <div>
-                      <span className="text-[9px] text-slate-500 uppercase block font-semibold">MATCH CONFIDENCE</span>
+                      <span className="text-[9px] text-slate-500 uppercase block font-semibold">MATCH SCORE</span>
                       <div className="flex items-center gap-1.5">
-                        <div className="flex-1 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                        <div className="flex-1 bg-slate-200 rounded-full h-1.5 overflow-hidden">
                           <div
-                            className="h-full bg-sky-600 rounded-full"
+                            className="h-full bg-slate-900 rounded-full"
                             style={{ width: `${Math.min(100, Math.max(10, test.confidence * 100))}%` }}
                           />
                         </div>
@@ -276,15 +277,24 @@ export default function TestLogPage() {
                   </div>
 
                   <div className="flex items-center justify-between text-[11px] font-mono pt-2 border-t border-slate-100">
-                    <div className="text-slate-500 truncate max-w-[170px]">
-                      📍 {test.latitude ? `${test.latitude.toFixed(4)}°, ${test.longitude.toFixed(4)}°` : "No GPS"}
+                    <div className="flex items-center gap-2 text-slate-500 truncate max-w-[170px]">
+                      <span className={`text-[9px] px-1.5 py-0.2 rounded font-bold uppercase ${
+                        test.location_verified
+                          ? "bg-emerald-100 text-emerald-800"
+                          : "bg-amber-100 text-amber-800"
+                      }`}>
+                        {test.location_verified ? "GPS" : "IP"}
+                      </span>
+                      <span className="truncate">
+                        {test.latitude ? `${test.latitude.toFixed(4)}°, ${test.longitude.toFixed(4)}°` : "No GPS"}
+                      </span>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => setDeleteTarget(test)}
-                        className="p-1.5 text-slate-400 hover:text-rose-600 rounded transition-colors touch-target"
+                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors tactile-btn touch-target"
                         title="Delete record"
                         aria-label="Delete evidence record"
                       >
@@ -293,13 +303,7 @@ export default function TestLogPage() {
                         </svg>
                       </button>
 
-                      <Link
-                        to={`/tests/${test.id}`}
-                        className="px-3 py-1.5 bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-700 rounded text-xs font-mono font-bold transition-colors tactile-btn touch-target flex items-center gap-1 shadow-2xs"
-                      >
-                        <span>DOSSIER</span>
-                        <span>→</span>
-                      </Link>
+                      <DossierButton testId={test.id} />
                     </div>
                   </div>
                 </div>
@@ -307,20 +311,20 @@ export default function TestLogPage() {
             })}
           </div>
 
-          {/* Desktop Tabular View (>= 768px) - Daylight High Contrast */}
-          <div className="hidden md:block bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-            <div className="overflow-x-auto">
+          {/* Desktop Tabular View (>= 768px) */}
+          <div className="hidden md:block bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
+            <div className="responsive-table-wrapper">
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="border-b border-slate-200 text-slate-600 font-mono text-left bg-slate-50">
-                    <th className="px-4 py-3 font-semibold">SWATCH</th>
-                    <th className="px-4 py-3 font-semibold">TIMESTAMP</th>
-                    <th className="px-4 py-3 font-semibold">REAGENT KIT</th>
-                    <th className="px-4 py-3 font-semibold">OPERATOR</th>
-                    <th className="px-4 py-3 font-semibold">OUTCOME</th>
-                    <th className="px-4 py-3 font-semibold">CONFIDENCE</th>
-                    <th className="px-4 py-3 font-semibold">GEO FIX</th>
-                    <th className="px-4 py-3 font-semibold text-right">ACTIONS</th>
+                  <tr className="border-b border-slate-200/80 text-slate-500 text-left bg-slate-50/60">
+                    <th className="px-4 py-3 font-semibold">Reaction swatch</th>
+                    <th className="px-4 py-3 font-semibold">Timestamp</th>
+                    <th className="px-4 py-3 font-semibold">Reagent kit</th>
+                    <th className="px-4 py-3 font-semibold">Operator</th>
+                    <th className="px-4 py-3 font-semibold">Outcome</th>
+                    <th className="px-4 py-3 font-semibold">Confidence</th>
+                    <th className="px-4 py-3 font-semibold">Geo fix</th>
+                    <th className="px-4 py-3 font-semibold text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -335,22 +339,22 @@ export default function TestLogPage() {
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
                             <span
-                              className="w-5 h-5 rounded border border-slate-200 shadow-2xs inline-block shrink-0"
+                              className="w-5 h-5 rounded-md border border-slate-200 shadow-2xs inline-block shrink-0"
                               style={{ backgroundColor: swatchColor }}
                               title={swatch ? `RGB: ${swatch.join(",")}` : "Auto"}
                             />
-                            <span className="font-mono text-[10px] text-slate-500 font-semibold">
+                            <span className="font-mono text-[10px] text-slate-500 font-semibold tabular-nums">
                               {swatch ? `${swatch.join(",")}` : "Auto"}
                             </span>
                           </div>
                         </td>
-                        <td className="px-4 py-3 font-mono text-slate-800 font-semibold">
+                        <td className="px-4 py-3 font-mono text-slate-800 font-semibold tabular-nums">
                           {new Date(test.captured_at).toLocaleDateString()}{" "}
                           <span className="text-slate-400 font-normal">
                             {new Date(test.captured_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                           </span>
                         </td>
-                        <td className="px-4 py-3 font-semibold text-slate-900">
+                        <td className="px-4 py-3 font-medium text-slate-900">
                           {test.kit_type_name || "Reagent"}
                         </td>
                         <td className="px-4 py-3">
@@ -364,19 +368,19 @@ export default function TestLogPage() {
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
-                            <div className="w-14 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                            <div className="w-14 h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200/80">
                               <div
                                 className="h-full bg-sky-600"
                                 style={{ width: `${Math.min(100, Math.max(10, test.confidence * 100))}%` }}
                               />
                             </div>
-                            <span className="font-mono text-slate-700 font-bold">
+                            <span className="font-mono text-slate-700 font-bold tabular-nums">
                               {(test.confidence * 100).toFixed(0)}%
                             </span>
                           </div>
                         </td>
                         <td className="px-4 py-3 font-mono text-slate-600">
-                          <div>{test.latitude.toFixed(4)}°, {test.longitude.toFixed(4)}°</div>
+                          <div className="tabular-nums">{test.latitude.toFixed(4)}°, {test.longitude.toFixed(4)}°</div>
                           <span className={`inline-block px-1.5 py-0.2 rounded text-[10px] font-semibold mt-0.5 ${
                             test.location_verified
                               ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
@@ -387,16 +391,11 @@ export default function TestLogPage() {
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex items-center justify-end gap-1.5">
-                            <Link
-                              to={`/tests/${test.id}`}
-                              className="px-2.5 py-1 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-sky-700 rounded font-mono font-semibold transition-colors inline-block shadow-2xs"
-                            >
-                              DOSSIER
-                            </Link>
+                            <DossierButton testId={test.id} />
                             <button
                               type="button"
                               onClick={() => setDeleteTarget(test)}
-                              className="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors touch-target min-h-[44px] min-w-[44px] inline-flex items-center justify-center"
+                              className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors tactile-btn touch-target"
                               title="Delete Evidence Record"
                               aria-label="Delete evidence record"
                             >
@@ -419,23 +418,23 @@ export default function TestLogPage() {
       {/* Touch-Friendly Pagination Controls */}
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-          <p className="text-xs font-mono text-slate-500">
-            PAGE {page} OF {totalPages} ({total} TOTAL RECORDS)
+          <p className="text-xs font-mono text-slate-500 tabular-nums">
+            Page {page} of {totalPages} ({total} total records)
           </p>
           <div className="flex gap-2 w-full sm:w-auto">
             <button
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
-              className="flex-1 sm:flex-initial px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-xs font-mono font-semibold text-slate-700 disabled:opacity-40 transition-colors tactile-btn touch-target shadow-xs"
+              className="apple-btn-secondary flex-1 sm:flex-initial px-4 py-2 text-xs disabled:opacity-40 touch-target"
             >
-              ← PREVIOUS
+              ← Previous
             </button>
             <button
               disabled={page >= totalPages}
               onClick={() => setPage((p) => p + 1)}
-              className="flex-1 sm:flex-initial px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-xs font-mono font-semibold text-slate-700 disabled:opacity-40 transition-colors tactile-btn touch-target shadow-xs"
+              className="apple-btn-secondary flex-1 sm:flex-initial px-4 py-2 text-xs disabled:opacity-40 touch-target"
             >
-              NEXT →
+              Next →
             </button>
           </div>
         </div>
@@ -444,7 +443,7 @@ export default function TestLogPage() {
       {/* Permanent Deletion Confirmation Modal */}
       {deleteTarget && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 safe-bottom backdrop-enter">
-          <div className="bg-white border border-rose-200 rounded-xl p-5 max-w-md w-full space-y-4 shadow-xl modal-enter">
+          <div className="bg-white border border-rose-200/90 rounded-2xl p-5 sm:p-6 max-w-md w-full space-y-4 shadow-xl modal-enter">
             <div className="flex items-center gap-3 text-rose-600">
               <div className="w-10 h-10 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-rose-600">
@@ -452,7 +451,7 @@ export default function TestLogPage() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-base font-bold text-slate-900 font-mono">PURGE EVIDENCE RECORD?</h3>
+                <h3 className="text-base font-bold text-slate-900 font-display">Purge evidence record?</h3>
                 <p className="text-xs text-rose-700 font-mono">ID: {deleteTarget.id.slice(0, 8)}...</p>
               </div>
             </div>
@@ -471,17 +470,17 @@ export default function TestLogPage() {
                 type="button"
                 onClick={() => setDeleteTarget(null)}
                 disabled={deleting}
-                className="px-4 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-lg text-xs font-mono transition tactile-btn touch-target shadow-xs"
+                className="apple-btn-secondary px-4 py-2 text-xs touch-target"
               >
-                CANCEL
+                Cancel
               </button>
               <button
                 type="button"
                 onClick={handleConfirmDelete}
                 disabled={deleting}
-                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 disabled:opacity-50 tactile-btn touch-target shadow-xs"
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-semibold transition-all duration-150 active:scale-[0.97] tactile-btn touch-target flex items-center gap-1.5 disabled:opacity-50 shadow-xs"
               >
-                {deleting ? "PURGING..." : "CONFIRM PURGE"}
+                {deleting ? "Purging..." : "Confirm Purge"}
               </button>
             </div>
           </div>

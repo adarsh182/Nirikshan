@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Space Grotesk", "Inter", sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Menlo, monospace;
 
   --color-paper: oklch(98.5% 0.004 250);
   --color-paper-2: oklch(100% 0 0);
@@ -24,7 +24,7 @@
   --color-paper: oklch(98.5% 0.004 250);
   --color-paper-2: oklch(100% 0 0);
   --color-paper-3: oklch(96% 0.008 250);
-  --color-paper-glass: oklch(100% 0 0 / 0.92);
+  --color-paper-glass: oklch(100% 0 0 / 0.85);
   --color-ink: oklch(24% 0.02 258);
   --color-ink-2: oklch(45% 0.02 258);
   --color-ink-muted: oklch(62% 0.015 258);
@@ -35,17 +35,19 @@
   --color-negative: oklch(58% 0.18 148);
   --color-inconclusive: oklch(65% 0.16 65);
 
-  --font-display: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Space Grotesk", "Inter", sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Menlo, monospace;
 
-  /* Emil Kowalski / Apple HIG Timing Curves */
+  /* Apple HIG & Emil Kowalski Timing Curves */
+  --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-apple-spring: cubic-bezier(0.175, 0.885, 0.32, 1.1);
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* Mobile Responsiveness & Tactile Baseline (mobile-native / apple-design) */
+/* Mobile Responsiveness & Apple Tactile Baseline */
 html, body {
   overflow-x: clip;
   background-color: var(--color-paper);
@@ -53,13 +55,59 @@ html, body {
   font-family: var(--font-body);
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   overscroll-behavior: none;
   touch-action: manipulation;
 }
 
+/* Apple Typography: Optical Sizing & Tracking */
+h1, h2, .apple-heading {
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+
+/* Fluid Typography Scales via CSS clamp() */
+:root {
+  --fluid-h1: clamp(1.5rem, 1.25rem + 1.2vw, 2.25rem);
+  --fluid-h2: clamp(1.2rem, 1.05rem + 0.75vw, 1.625rem);
+  --fluid-h3: clamp(0.95rem, 0.88rem + 0.35vw, 1.15rem);
+  --fluid-body: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem);
+  --fluid-kpi: clamp(1.75rem, 1.35rem + 1.5vw, 2.375rem);
+  --space-fluid-page: clamp(0.75rem, 0.5rem + 1.25vw, 1.5rem);
+}
+
+.text-fluid-h1 {
+  font-size: var(--fluid-h1);
+  line-height: 1.15;
+}
+
+.text-fluid-h2 {
+  font-size: var(--fluid-h2);
+  line-height: 1.25;
+}
+
+.text-fluid-h3 {
+  font-size: var(--fluid-h3);
+  line-height: 1.35;
+}
+
+.text-fluid-kpi {
+  font-size: var(--fluid-kpi);
+  line-height: 1.1;
+}
+
+/* Container Queries for component-level adaptability */
+.card-container {
+  container-type: inline-size;
+}
+
 /* Prevent iOS auto-zoom on field focus */
-input, textarea, select {
-  font-size: 16px;
+@media (max-width: 767px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
 }
 
 /* Prevent text selection on interactive controls during rapid tapping */
@@ -79,21 +127,131 @@ button, [role="button"], .tactile-btn {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Interactive touch target discipline (min 44px on mobile devices) */
-@media (pointer: coarse) {
+/* Interactive touch target discipline (min 44px on mobile devices & coarse pointers) */
+@media (max-width: 767px), (pointer: coarse) {
   .touch-target {
     min-height: 44px;
     min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
-/* Responsive micro-interactions: transform 160ms with custom ease-out */
+/* Responsive Table Scroll Container */
+.responsive-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(203, 213, 225, 0.7) transparent;
+}
+
+/* 8-State Interactive Micro-interactions (Apple HIG / Hallmark Tactical) */
 .tactile-btn {
-  transition: transform 160ms var(--ease-out), background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  transition: transform 140ms var(--ease-apple), background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
   will-change: transform;
 }
-.tactile-btn:active {
+.tactile-btn:active:not(:disabled) {
   transform: scale(0.97);
+}
+.tactile-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #0284c7;
+}
+.tactile-btn:disabled,
+.tactile-btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+}
+
+/* Apple Obsidian Primary Button - Full 8-State Engine */
+.apple-btn-primary {
+  background-color: rgb(15, 23, 42);
+  color: #ffffff;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: transform 140ms var(--ease-apple), background-color 140ms ease, box-shadow 140ms ease, border-color 140ms ease, opacity 140ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.apple-btn-primary:hover:not(:disabled) {
+  background-color: rgb(30, 41, 59);
+}
+.apple-btn-primary:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.apple-btn-primary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #0284c7;
+}
+.apple-btn-primary:disabled,
+.apple-btn-primary[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+}
+.apple-btn-primary[data-loading="true"] {
+  opacity: 0.8;
+  cursor: wait;
+}
+.apple-btn-primary[data-state="error"] {
+  background-color: rgb(225, 29, 72);
+}
+.apple-btn-primary[data-state="success"] {
+  background-color: rgb(5, 150, 105);
+}
+
+/* Apple Secondary Pill / Button - Full 8-State Engine */
+.apple-btn-secondary {
+  background-color: #ffffff;
+  color: rgb(51, 65, 85);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: transform 140ms var(--ease-apple), background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.apple-btn-secondary:hover:not(:disabled) {
+  background-color: rgb(248, 250, 252);
+  color: rgb(15, 23, 42);
+  border-color: rgb(203, 213, 225);
+}
+.apple-btn-secondary:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.apple-btn-secondary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #0284c7;
+}
+.apple-btn-secondary:disabled,
+.apple-btn-secondary[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+}
+.apple-btn-secondary[data-loading="true"] {
+  opacity: 0.8;
+  cursor: wait;
+}
+.apple-btn-secondary[data-state="error"] {
+  border-color: rgb(244, 63, 94);
+  color: rgb(225, 29, 72);
+}
+.apple-btn-secondary[data-state="success"] {
+  border-color: rgb(16, 185, 129);
+  color: rgb(5, 150, 105);
 }
 
 /* Modal Backdrop smooth fade-in */

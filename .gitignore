@@ -50,4 +50,4 @@ skills-lock.json
 debug_crop*.png
 brag-output*/
 setup-agent-skills.sh
-
+*.tsbuildinfo

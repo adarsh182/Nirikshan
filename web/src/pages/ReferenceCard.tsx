@@ -28,21 +28,21 @@ export default function ReferenceCardPage() {
   return (
     <div className="space-y-5 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 pb-4 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 pb-4 border-b border-slate-200/80">
         <div>
           <Link
             to="/"
-            className="text-xs font-mono text-sky-700 hover:text-sky-800 font-semibold mb-1.5 inline-flex items-center gap-1 tactile-btn touch-target"
+            className="text-xs font-medium text-slate-600 hover:text-slate-900 mb-1.5 inline-flex items-center gap-1 tactile-btn touch-target group"
           >
-            <span>←</span>
-            <span>BACK TO DASHBOARD</span>
+            <span className="transition-transform duration-150 group-hover:-translate-x-0.5">←</span>
+            <span>Back to Dashboard</span>
           </Link>
           <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 font-mono">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 font-display">
               Calibration Standard Card
             </h1>
-            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-sky-50 text-sky-700 font-semibold border border-sky-200">
-              ISO/CIE COMPLIANT
+            <span className="text-[10px] font-mono uppercase px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 font-semibold border border-sky-200/80 shadow-2xs">
+              ISO/CIE Compliant
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1 max-w-xl">
@@ -50,34 +50,41 @@ export default function ReferenceCardPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 pt-1 sm:pt-0">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 pt-1 sm:pt-0 w-full sm:w-auto">
           <button
             onClick={handleDownloadSvg}
-            className="px-3.5 py-2.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-lg text-xs font-mono font-semibold transition-colors tactile-btn touch-target flex items-center gap-1.5 shadow-xs"
+            className="flex-1 sm:flex-initial apple-btn-secondary px-3.5 py-2.5 flex items-center justify-center gap-1.5 touch-target"
           >
-            <span>DOWNLOAD SVG</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-slate-500">
+              <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
+              <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+            </svg>
+            <span>Download SVG</span>
           </button>
           <button
             onClick={handlePrint}
-            className="px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-mono font-bold tracking-wider uppercase shadow-xs transition-all tactile-btn touch-target flex items-center gap-1.5"
+            className="flex-1 sm:flex-initial apple-btn-primary px-4 py-2.5 flex items-center justify-center gap-1.5 touch-target"
           >
-            <span>PRINT CARD</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+              <path fillRule="evenodd" d="M5 2.75C5 1.784 5.784 1 6.75 1h6.5c.966 0 1.75.784 1.75 1.75v3.5A1.75 1.75 0 0 1 16.75 8H17a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-.25A1.75 1.75 0 0 1 15 17.75v-1.5h-10v1.5A1.75 1.75 0 0 1 3.25 16H3a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h.25A1.75 1.75 0 0 1 5 6.25v-3.5Zm1.75.25a.25.25 0 0 0-.25.25v3.5c0 .138.112.25.25.25h6.5a.25.25 0 0 0 .25-.25v-3.5a.25.25 0 0 0-.25-.25h-6.5ZM15 14.75v-3.5a.25.25 0 0 0-.25-.25h-9.5a.25.25 0 0 0-.25.25v3.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25Z" clipRule="evenodd" />
+            </svg>
+            <span>Print card</span>
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
         {/* Visual Card Display */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 flex flex-col items-center justify-center shadow-xs space-y-4">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center shadow-xs space-y-4">
           <p className="text-[10px] uppercase font-mono tracking-widest text-slate-500 font-semibold">
-            ACTUAL SPECIFICATION: 50MM × 30MM (2:3 RATIO)
+            Actual specification: 50mm × 30mm (2:3 ratio)
           </p>
 
           <div className="bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm max-w-full">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 500 300"
-              className="w-72 sm:w-96 h-auto drop-shadow-sm rounded-lg overflow-hidden bg-slate-900"
+              className="w-full max-w-[340px] sm:max-w-sm h-auto drop-shadow-sm rounded-lg overflow-hidden bg-slate-900"
             >
               <rect width="500" height="300" fill="#0f172a" rx="8" />
               {/* Row 1 */}
@@ -112,7 +119,7 @@ export default function ReferenceCardPage() {
             <p className="text-xs text-slate-500">Standardized sRGB and CIE target matrices.</p>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="responsive-table-wrapper">
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-600 font-mono text-left bg-slate-50">

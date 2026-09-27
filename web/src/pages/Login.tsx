@@ -35,31 +35,31 @@ export default function LoginPage() {
       <div className="w-full max-w-md my-auto space-y-6">
         {/* Brand Shield & Title */}
         <div className="text-center space-y-2">
-          <NirikshanLogo size={64} className="mx-auto" />
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 font-mono">
+          <NirikshanLogo size={64} className="mx-auto drop-shadow-sm hover:scale-105 transition-transform" />
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 font-display">
             NIRIKSHAN
           </h1>
           <p className="text-xs text-sky-700 font-mono tracking-wider uppercase font-semibold">
-            FORENSIC COLORIMETRIC FIELD COMPANION
+            Forensic Colorimetric Field Companion
           </p>
         </div>
 
         {/* Operator Selection Card */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
-              <h2 className="text-sm font-bold font-mono text-slate-900 uppercase tracking-wide">
-                OPERATING OFFICER SIGN-IN
+              <h2 className="text-sm font-bold font-display text-slate-900 tracking-tight">
+                Operating officer sign-in
               </h2>
               <p className="text-[11px] text-slate-500">Select badge profile for cryptographic attribution</p>
             </div>
-            <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-semibold">
+            <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 font-semibold shadow-2xs">
               TERMINAL READY
             </span>
           </div>
 
           {error && (
-            <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-xs">
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
               {error}
             </div>
           )}
@@ -74,16 +74,16 @@ export default function LoginPage() {
               NO OPERATORS FOUND IN DATABASE.
             </div>
           ) : (
-            <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">
+            <div className="space-y-2.5 max-h-[340px] overflow-y-auto pr-1">
               {operators.map((op) => (
                 <button
                   key={op.id}
                   onClick={() => handleSelect(op)}
-                  className="w-full text-left p-3.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-sky-400 hover:bg-sky-50/50 transition-all flex items-center justify-between gap-3 group tactile-btn touch-target shadow-2xs"
+                  className="w-full text-left p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/80 hover:border-sky-300 hover:bg-sky-50/40 active:bg-sky-100/50 transition-all duration-150 flex items-center justify-between gap-3 group tactile-btn touch-target shadow-2xs"
                 >
                   <div className="space-y-0.5 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-sky-800 bg-sky-100 px-1.5 py-0.5 rounded border border-sky-200">
+                      <span className="font-mono text-xs font-bold text-sky-800 bg-sky-100/90 px-1.5 py-0.5 rounded-md border border-sky-200/80">
                         {op.badge_id}
                       </span>
                       <span className="text-sm font-semibold text-slate-900 group-hover:text-sky-800 transition-colors truncate">
@@ -95,8 +95,9 @@ export default function LoginPage() {
                     </span>
                   </div>
 
-                  <span className="text-xs font-mono text-slate-600 group-hover:text-sky-700 font-semibold px-2.5 py-1 rounded bg-white border border-slate-200 group-hover:border-sky-300 transition-colors shrink-0 shadow-2xs">
-                    AUTHENTICATE →
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200/80 px-2.5 py-1 rounded-lg group-hover:shadow-xs transition-all shrink-0 shadow-2xs">
+                    <span>Authenticate</span>
+                    <span className="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
                   </span>
                 </button>
               ))}

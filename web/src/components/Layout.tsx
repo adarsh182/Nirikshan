@@ -51,8 +51,8 @@ export default function Layout() {
   return (
     <div className="min-h-screen min-h-[100dvh] flex flex-col bg-slate-50 text-slate-900 selection:bg-sky-500 selection:text-white font-sans antialiased">
       <Toaster richColors position="top-right" />
-      {/* Top Tactical Status Bar - Clean Daylight Mode */}
-      <header className="border-b border-slate-200 bg-white/95 backdrop-blur-md sticky top-0 z-40 print:hidden safe-top shadow-xs">
+      {/* Top Tactical Status Bar - Apple Frosted Glass Header */}
+      <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur-xl sticky top-0 z-40 print:hidden safe-top shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
         <div className="max-w-7xl mx-auto px-3.5 sm:px-6 py-2.5 flex items-center justify-between">
           {/* Brand & Wordmark */}
           <div className="flex items-center gap-3">
@@ -60,10 +60,10 @@ export default function Layout() {
               <NirikshanLogo size={32} className="shrink-0 group-hover:scale-105 transition-transform" />
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold tracking-tight text-slate-900 font-mono">
+                  <span className="text-sm font-semibold tracking-tight text-slate-900 font-display">
                     NIRIKSHAN
                   </span>
-                  <span className="hidden sm:inline-block text-[10px] font-mono uppercase px-1.5 py-0.2 bg-sky-50 text-sky-700 border border-sky-200 rounded font-semibold">
+                  <span className="hidden sm:inline-block text-[10px] font-mono uppercase px-1.5 py-0.2 bg-sky-50 text-sky-700 border border-sky-200/80 rounded font-semibold">
                     SECURE-FTC
                   </span>
                 </div>
@@ -74,17 +74,17 @@ export default function Layout() {
             </Link>
 
             {/* Desktop Navigation Links */}
-            <nav className="hidden md:flex items-center gap-1 ml-6 border-l border-slate-200 pl-6">
+            <nav className="hidden md:flex items-center gap-1 ml-6 border-l border-slate-200/80 pl-6">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.to;
                 return (
                   <Link
                     key={item.to}
                     to={item.to}
-                    className={`px-3.5 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-colors tactile-btn ${
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all duration-150 tactile-btn ${
                       isActive
-                        ? "bg-slate-100 text-sky-700 font-semibold border border-slate-200 shadow-xs"
-                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/60"
+                        ? "bg-slate-100/90 text-sky-700 font-semibold border border-slate-200/80 shadow-2xs"
+                        : "text-slate-600 hover:text-slate-950 hover:bg-slate-100/60"
                     }`}
                   >
                     {item.label}
@@ -97,16 +97,16 @@ export default function Layout() {
           {/* Right Status & Officer Profile */}
           <div className="flex items-center gap-2.5">
             {/* Live Telemetry Ping */}
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-100 border border-slate-200 text-[11px] font-mono text-slate-700">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100/80 border border-slate-200/80 text-[11px] font-mono text-slate-700 shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
               <span className="hidden xs:inline text-slate-500">REGISTRY:</span>
               <span className="text-emerald-700 font-semibold">LIVE</span>
             </div>
 
             {/* Officer Badge Identifier */}
-            <div className="flex items-center gap-2 bg-slate-100 border border-slate-200 rounded-lg px-2.5 py-1 text-xs">
+            <div className="flex items-center gap-2 bg-slate-100/80 border border-slate-200/80 rounded-xl px-2.5 py-1 text-xs shadow-2xs">
               <div className="text-right leading-tight">
-                <span className="font-semibold text-slate-800 block truncate max-w-[100px] sm:max-w-none text-[11px] sm:text-xs">
+                <span className="font-semibold text-slate-900 block truncate max-w-[100px] sm:max-w-none text-[11px] sm:text-xs">
                   {operator?.name?.split(" ")[0] || "Officer"}
                 </span>
                 <span className="font-mono text-[10px] text-sky-700 block tracking-wider font-semibold">
@@ -116,7 +116,7 @@ export default function Layout() {
 
               <button
                 onClick={switchOperator}
-                className="p-1 text-slate-500 hover:text-slate-900 hover:bg-slate-200/70 rounded transition-colors tactile-btn"
+                className="p-1 text-slate-500 hover:text-slate-900 hover:bg-slate-200/80 rounded-lg transition-colors tactile-btn active:scale-95"
                 title="Switch active operating officer"
                 aria-label="Switch operator"
               >
@@ -130,14 +130,14 @@ export default function Layout() {
       </header>
 
       {/* Main Content Area - padded for mobile thumb dock */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 py-4 sm:py-6 pb-24 md:pb-10">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 py-4 sm:py-6 pb-28 sm:pb-32 md:pb-10">
         <Outlet />
       </main>
 
-      {/* Mobile-First Ergonomic Thumb-Zone Bottom Dock (< 768px) - Clean Light Mode */}
+      {/* Mobile-First Ergonomic Thumb-Zone Bottom Dock (< 768px) - Apple Translucent Chrome */}
       <nav
         aria-label="Mobile Bottom Navigation"
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-slate-200 safe-bottom print:hidden shadow-lg"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/85 backdrop-blur-xl border-t border-slate-200/80 safe-bottom print:hidden shadow-[0_-4px_24px_rgba(0,0,0,0.04)]"
       >
         <div className="grid grid-cols-4 items-center h-16 max-w-md mx-auto px-2">
           {navItems.map((item) => {

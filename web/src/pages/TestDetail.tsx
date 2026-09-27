@@ -371,7 +371,7 @@ export default function TestDetailPage() {
             "I hereby certify under the penalties of perjury that this presumptive field drug test was executed in accordance with established standard operating procedures. The digital evidentiary record, coordinates, and classification outcome recorded above have been preserved in continuous cryptographic custody without modification."
           </p>
 
-          <div className="grid grid-cols-2 gap-12 pt-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-12 print:grid-cols-2 print:gap-12 pt-4 text-xs">
             <div className="border-t border-slate-900 pt-2 space-y-1">
               <p className="font-bold text-slate-950">Investigating Officer Signature</p>
               <p className="text-slate-600 text-[11px]">{test.operator_name || "Officer R. Sharma"} ({test.operator_badge_id || "OFF-001"})</p>
@@ -391,21 +391,22 @@ export default function TestDetailPage() {
       {/* ========================================================================= */}
       <div className="space-y-6 print:hidden">
         {/* Navigation & Action Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80">
           <div>
             <Link
               to="/tests"
-              className="text-xs font-medium text-slate-600 hover:text-slate-900 mb-1 inline-flex items-center gap-1 transition touch-target"
+              className="text-xs font-medium text-slate-600 hover:text-slate-900 mb-1 inline-flex items-center gap-1 transition touch-target group"
             >
-              <span>← Evidence register</span>
+              <span className="transition-transform duration-150 group-hover:-translate-x-0.5">←</span>
+              <span>Evidence register</span>
             </Link>
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 font-display">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 font-display">
                 Dossier #{test.id.slice(0, 8)}
               </h1>
               <ResultBadge result={test.result} />
               {details?.officer_override && (
-                <span className="text-xs px-2.5 py-0.5 rounded bg-amber-50 text-amber-800 font-semibold border border-amber-200">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 font-semibold border border-amber-200 shadow-2xs">
                   Supervisor override
                 </span>
               )}
@@ -415,49 +416,106 @@ export default function TestDetailPage() {
             </p>
           </div>
 
-          {/* Action Toolbar */}
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={handleVerify}
-              disabled={verifying}
-              className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold shadow-xs transition tactile-btn touch-target flex items-center gap-1.5 disabled:opacity-50"
-            >
-              {verifying ? "Verifying..." : "Verify seal"}
-            </button>
-            <button
-              onClick={handlePrintCertificate}
-              className="px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition tactile-btn touch-target shadow-xs"
-            >
-              Print certificate
-            </button>
-            <button
-              onClick={() => setShowCertPreview(!showCertPreview)}
-              className="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-lg text-xs transition tactile-btn touch-target shadow-xs"
-            >
-              {showCertPreview ? "Hide preview" : "Preview certificate"}
-            </button>
-            <button
-              onClick={() => setOverrideModal(true)}
-              className="px-3 py-2 bg-white hover:bg-amber-50/50 border border-slate-200 text-amber-700 rounded-lg text-xs font-semibold transition tactile-btn touch-target shadow-xs"
-            >
-              Reclassify
-            </button>
-            <button
-              onClick={handleExportJson}
-              className="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 rounded-lg text-xs transition tactile-btn touch-target shadow-xs"
-              title="Download JSON dossier"
-            >
-              JSON
-            </button>
-            <button
-              onClick={() => setDeleteModal(true)}
-              className="p-2 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 text-slate-400 hover:text-rose-600 rounded-lg text-xs transition tactile-btn touch-target shadow-xs"
-              title="Purge record"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clipRule="evenodd" />
-              </svg>
-            </button>
+          {/* Action Toolbar - Structured for Mobile & Desktop */}
+          <div className="w-full sm:w-auto space-y-2 sm:space-y-0">
+            {/* Mobile-Only Structured Rows (< sm) */}
+            <div className="flex sm:hidden flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleVerify}
+                  disabled={verifying}
+                  className="flex-1 apple-btn-primary py-2.5 flex items-center justify-center gap-1.5 disabled:opacity-50 touch-target font-semibold"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                    <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd" />
+                  </svg>
+                  <span>{verifying ? "Verifying..." : "Verify seal"}</span>
+                </button>
+                <button
+                  onClick={handlePrintCertificate}
+                  className="flex-1 apple-btn-secondary py-2.5 touch-target flex items-center justify-center gap-1.5 font-medium"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-slate-500">
+                    <path fillRule="evenodd" d="M5 2.75C5 1.784 5.784 1 6.75 1h6.5c.966 0 1.75.784 1.75 1.75v3.5A1.75 1.75 0 0 1 16.75 8H17a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-.25A1.75 1.75 0 0 1 15 17.75v-1.5h-10v1.5A1.75 1.75 0 0 1 3.25 16H3a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h.25A1.75 1.75 0 0 1 5 6.25v-3.5Zm1.75.25a.25.25 0 0 0-.25.25v3.5c0 .138.112.25.25.25h6.5a.25.25 0 0 0 .25-.25v-3.5a.25.25 0 0 0-.25-.25h-6.5ZM15 14.75v-3.5a.25.25 0 0 0-.25-.25h-9.5a.25.25 0 0 0-.25.25v3.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25Z" clipRule="evenodd" />
+                  </svg>
+                  <span>Certificate</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-4 gap-1.5 text-xs">
+                <button
+                  onClick={() => setShowCertPreview(!showCertPreview)}
+                  className="apple-btn-secondary py-2 text-[11px] touch-target flex items-center justify-center truncate"
+                >
+                  {showCertPreview ? "Hide preview" : "Preview"}
+                </button>
+                <button
+                  onClick={() => setOverrideModal(true)}
+                  className="apple-btn-secondary py-2 text-[11px] text-amber-700 hover:text-amber-800 touch-target flex items-center justify-center truncate font-medium"
+                >
+                  Reclassify
+                </button>
+                <button
+                  onClick={handleExportJson}
+                  className="apple-btn-secondary py-2 text-[11px] text-slate-600 touch-target flex items-center justify-center truncate font-mono"
+                  title="Download JSON dossier"
+                >
+                  JSON
+                </button>
+                <button
+                  onClick={() => setDeleteModal(true)}
+                  className="apple-btn-secondary py-2 text-[11px] text-rose-600 hover:bg-rose-50 touch-target flex items-center justify-center"
+                  title="Purge record"
+                >
+                  Purge
+                </button>
+              </div>
+            </div>
+
+            {/* Desktop Unified Toolbar (>= sm) */}
+            <div className="hidden sm:flex items-center gap-2">
+              <button
+                onClick={handleVerify}
+                disabled={verifying}
+                className="apple-btn-primary px-4 py-2 flex items-center justify-center gap-1.5 disabled:opacity-50 touch-target"
+              >
+                {verifying ? "Verifying..." : "Verify seal"}
+              </button>
+              <button
+                onClick={handlePrintCertificate}
+                className="apple-btn-secondary px-3.5 py-2 touch-target flex items-center justify-center"
+              >
+                Print certificate
+              </button>
+              <button
+                onClick={() => setShowCertPreview(!showCertPreview)}
+                className="apple-btn-secondary px-3.5 py-2 touch-target flex items-center justify-center"
+              >
+                {showCertPreview ? "Hide preview" : "Preview certificate"}
+              </button>
+              <button
+                onClick={() => setOverrideModal(true)}
+                className="apple-btn-secondary px-3.5 py-2 text-amber-700 hover:text-amber-800 touch-target flex items-center justify-center"
+              >
+                Reclassify
+              </button>
+              <button
+                onClick={handleExportJson}
+                className="apple-btn-secondary px-3 py-2 text-slate-600 touch-target flex items-center justify-center font-mono"
+                title="Download JSON dossier"
+              >
+                JSON
+              </button>
+              <button
+                onClick={() => setDeleteModal(true)}
+                className="p-2 bg-white hover:bg-rose-50 border border-slate-200/90 hover:border-rose-200 text-slate-400 hover:text-rose-600 rounded-xl text-xs transition tactile-btn touch-target shadow-2xs flex items-center justify-center"
+                title="Purge record"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                  <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -615,9 +673,13 @@ export default function TestDetailPage() {
               </div>
               <button
                 onClick={() => handleCopy(test.id, "Record ID")}
-                className="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded text-xs transition tactile-btn touch-target shadow-2xs"
+                className="px-3.5 py-1.5 min-h-[38px] bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-medium transition tactile-btn touch-target shadow-2xs"
               >
-                Copy
+                {copiedField === "Record ID" ? (
+                  <span className="text-emerald-700 font-bold flex items-center gap-1">✓ Copied</span>
+                ) : (
+                  "Copy"
+                )}
               </button>
             </div>
 
@@ -628,9 +690,13 @@ export default function TestDetailPage() {
               </div>
               <button
                 onClick={() => handleCopy(test.image_hash, "Image Hash")}
-                className="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded text-xs transition tactile-btn touch-target shadow-2xs"
+                className="px-3.5 py-1.5 min-h-[38px] bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-medium transition tactile-btn touch-target shadow-2xs"
               >
-                Copy
+                {copiedField === "Image Hash" ? (
+                  <span className="text-emerald-700 font-bold flex items-center gap-1">✓ Copied</span>
+                ) : (
+                  "Copy"
+                )}
               </button>
             </div>
 
@@ -641,9 +707,13 @@ export default function TestDetailPage() {
               </div>
               <button
                 onClick={() => handleCopy(test.record_hash, "Record Hash")}
-                className="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded text-xs transition tactile-btn touch-target shadow-2xs"
+                className="px-3.5 py-1.5 min-h-[38px] bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-medium transition tactile-btn touch-target shadow-2xs"
               >
-                Copy
+                {copiedField === "Record Hash" ? (
+                  <span className="text-emerald-700 font-bold flex items-center gap-1">✓ Copied</span>
+                ) : (
+                  "Copy"
+                )}
               </button>
             </div>
 
@@ -654,9 +724,13 @@ export default function TestDetailPage() {
               </div>
               <button
                 onClick={() => handleCopy(test.signature, "Signature")}
-                className="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded text-xs transition tactile-btn touch-target shadow-2xs"
+                className="px-3.5 py-1.5 min-h-[38px] bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-medium transition tactile-btn touch-target shadow-2xs"
               >
-                Copy
+                {copiedField === "Signature" ? (
+                  <span className="text-emerald-700 font-bold flex items-center gap-1">✓ Copied</span>
+                ) : (
+                  "Copy"
+                )}
               </button>
             </div>
           </div>

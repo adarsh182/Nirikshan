@@ -642,15 +642,16 @@ export default function CapturePage() {
             <div className="flex items-center gap-3">
               <button
                 onClick={handleRetake}
-                className="px-4 py-2 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs font-mono font-semibold border border-slate-200 transition shadow-xs"
+                className="apple-btn-secondary px-4 py-2 text-xs touch-target"
               >
-                Capture Another
+                Capture another
               </button>
               <button
                 onClick={() => navigate(`/tests/${submitResult.id}`)}
-                className="px-5 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-mono font-bold transition flex items-center gap-2 shadow-sm"
+                className="apple-btn-primary px-4 py-2 flex items-center gap-2 touch-target group"
               >
-                <span>Open Forensic Dossier</span>
+                <span>Open forensic dossier</span>
+                <span className="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
               </button>
             </div>
           </div>
@@ -662,8 +663,8 @@ export default function CapturePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
           {/* Left Column: Kit Selection & Custody Telemetry (4 cols) - Hallmark Canonical Light Mode */}
           <div className="lg:col-span-4 space-y-4">
-            {/* Reagent Kit Selection */}
-            <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-3">
+            {/* Reagent Kit Selection (Desktop View - Mobile uses top quick selector) */}
+            <div className="hidden lg:block bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-3">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
                 <div>
                   <h3 className="text-xs sm:text-sm font-bold font-mono text-slate-900 uppercase tracking-wide">Reagent Standard</h3>
@@ -943,18 +944,42 @@ export default function CapturePage() {
             </div>
           </div>
 
-          {/* Right Column: Camera Viewport / Image Upload & Analysis (8 cols) */}
-          <div className="lg:col-span-8 space-y-4">
+          {/* Right Column: Camera Viewport / Image Upload & Analysis (8 cols, prioritized on mobile) */}
+          <div className="lg:col-span-8 space-y-4 order-first lg:order-last">
+            {/* Mobile Quick Reagent Selector (< lg) */}
+            <div className="lg:hidden bg-white border border-slate-200/90 rounded-xl p-3 shadow-2xs">
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider block font-semibold">Active Reagent Standard</span>
+                  <span className="text-xs font-bold text-slate-900 truncate block">
+                    {selectedKit ? getReagentClassTitle(selectedKit.name) : "Select Reagent Kit"}
+                  </span>
+                </div>
+                <select
+                  value={selectedKitId}
+                  onChange={(e) => setSelectedKitId(e.target.value)}
+                  aria-label="Select active reagent standard"
+                  className="text-xs bg-sky-50 text-sky-800 border border-sky-200/80 rounded-lg px-2.5 py-1.5 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500/20 max-w-[150px] truncate touch-target"
+                >
+                  {kits.map((k) => (
+                    <option key={k.id} value={k.id}>
+                      {k.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             {/* Mode Switcher Tabs */}
-            <div className="flex items-center justify-between bg-white border border-slate-200 rounded-xl p-1.5 shadow-xs">
-              <div className="flex items-center gap-1">
+            <div className="flex flex-wrap items-center justify-between gap-2 bg-white border border-slate-200 rounded-xl p-1.5 shadow-xs">
+              <div className="flex items-center gap-1 w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={() => {
                     setMode("camera");
                     if (!capturedBlob) startCamera(selectedDeviceId || undefined);
                   }}
-                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+                  className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg transition tactile-btn touch-target ${
                     mode === "camera"
                       ? "bg-sky-50 text-sky-700 border border-sky-200 font-bold shadow-2xs"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
@@ -963,7 +988,7 @@ export default function CapturePage() {
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
                     <path d="M3.25 4A2.25 2.25 0 001 6.25v7.5A2.25 2.25 0 003.25 16h7.5A2.25 2.25 0 0013 13.75v-7.5A2.25 2.25 0 0010.75 4h-7.5zM19 4.75a.75.75 0 00-1.28-.53l-3 3a.75.75 0 00-.22.53v4.5c0 .199.079.39.22.53l3 3a.75.75 0 001.28-.53V4.75z" />
                   </svg>
-                  Live Web Camera
+                  <span>Live Camera</span>
                 </button>
 
                 <button
@@ -972,7 +997,7 @@ export default function CapturePage() {
                     setMode("upload");
                     stopCamera();
                   }}
-                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+                  className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg transition tactile-btn touch-target ${
                     mode === "upload"
                       ? "bg-sky-50 text-sky-700 border border-sky-200 font-bold shadow-2xs"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
@@ -981,7 +1006,7 @@ export default function CapturePage() {
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
                     <path fillRule="evenodd" d="M1 5.25A2.25 2.25 0 013.25 3h13.5A2.25 2.25 0 0119 5.25v9.5A2.25 2.25 0 0116.75 17H3.25A2.25 2.25 0 011 14.75v-9.5zm1.5 5.81v3.69c0 .414.336.75.75.75h13.5a.75.75 0 00.75-.75v-2.69l-2.22-2.219a.75.75 0 00-1.06 0l-1.91 1.909a.75.75 0 01-1.06 0L6.72 7.22a.75.75 0 00-1.06 0L2.5 11.06zm10.25-4.81a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0z" clipRule="evenodd" />
                   </svg>
-                  Upload Evidence Image
+                  <span>Upload Image</span>
                 </button>
               </div>
 
@@ -993,7 +1018,8 @@ export default function CapturePage() {
                     setSelectedDeviceId(e.target.value);
                     startCamera(e.target.value);
                   }}
-                  className="bg-slate-50 text-slate-800 text-xs border border-slate-200 rounded px-2 py-1 focus:outline-none focus:border-sky-500 max-w-[180px] truncate"
+                  aria-label="Select video capture camera device"
+                  className="bg-slate-50 text-slate-800 text-xs border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-500 max-w-[180px] truncate touch-target"
                 >
                   {videoDevices.map((dev, i) => (
                     <option key={dev.deviceId} value={dev.deviceId}>
@@ -1005,7 +1031,7 @@ export default function CapturePage() {
             </div>
 
             {/* Viewport Frame */}
-            <div className="relative bg-slate-950 rounded-xl border border-slate-800 overflow-hidden min-h-[440px] flex items-center justify-center shadow-lg">
+            <div className="relative bg-slate-950 rounded-xl border border-slate-800 overflow-hidden min-h-[320px] sm:min-h-[440px] max-h-[50dvh] sm:max-h-[500px] flex items-center justify-center shadow-lg">
               {/* Shutter visual flash effect */}
               {shutterFlash && (
                 <div className="absolute inset-0 bg-white z-50 pointer-events-none animate-shutter-flash" />
@@ -1021,30 +1047,18 @@ export default function CapturePage() {
                   />
 
                   {/* Image specs badge */}
-                  <div className="absolute top-6 left-6 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-lg px-3 py-1.5 text-[11px] font-mono text-slate-300 flex items-center gap-3">
-                    <span className="text-emerald-400 font-bold">READY FOR CLASSIFICATION</span>
+                  <div className="absolute top-4 sm:top-6 left-4 sm:left-6 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-lg px-2.5 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[11px] font-mono text-slate-300 flex items-center gap-2 sm:gap-3">
+                    <span className="text-emerald-400 font-bold">READY FOR ANALYSIS</span>
                     {imageMeta && (
-                      <span>
-                        {imageMeta.width} × {imageMeta.height} px ({imageMeta.sizeKb} KB)
+                      <span className="hidden xs:inline">
+                        {imageMeta.width}×{imageMeta.height} ({imageMeta.sizeKb} KB)
                       </span>
                     )}
                   </div>
-
-                  {/* Discard / Retake button */}
-                  <button
-                    type="button"
-                    onClick={handleRetake}
-                    className="absolute top-6 right-6 bg-slate-900/90 backdrop-blur-md hover:bg-red-500/20 hover:text-red-300 border border-slate-700 hover:border-red-500/40 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-                      <path fillRule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.75a.75.75 0 00-.75.75v4.482a.75.75 0 001.5 0v-2.146l.334.334a7 7 0 1011.66-3.666.75.75 0 00-1.182.891z" clipRule="evenodd" />
-                    </svg>
-                    Retake / Change
-                  </button>
                 </div>
               ) : mode === "camera" ? (
                 /* Case B: Live Camera Stream */
-                <div className="relative w-full h-full flex items-center justify-center min-h-[440px]">
+                <div className="relative w-full h-full flex items-center justify-center min-h-[320px] sm:min-h-[440px]">
                   {/* Live Video element */}
                   <video
                     ref={videoRef}
@@ -1097,64 +1111,64 @@ export default function CapturePage() {
                   {cameraActive && (
                     <>
                       {/* Top HUD banner */}
-                      <div className="absolute top-4 inset-x-4 flex items-center justify-between pointer-events-none z-10">
-                        <div className="bg-slate-950/80 border border-slate-800 rounded-lg px-3 py-1 text-[11px] font-mono text-slate-300 flex items-center gap-2">
+                      <div className="absolute top-3 sm:top-4 inset-x-3 sm:inset-x-4 flex items-center justify-between pointer-events-none z-10 text-[10px] sm:text-[11px]">
+                        <div className="bg-slate-950/80 border border-slate-800 rounded-lg px-2.5 sm:px-3 py-1 font-mono text-slate-300 flex items-center gap-2">
                           <span className="w-2 h-2 rounded-full bg-red-500" />
                           <span>LIVE FEED</span>
-                          <span className="text-slate-600">|</span>
-                          <span className="text-sky-400">{selectedKit?.name || "Reagent"}</span>
+                          <span className="text-slate-600 hidden xs:inline">|</span>
+                          <span className="text-sky-400 font-semibold truncate max-w-[120px] sm:max-w-none">{selectedKit?.name || "Reagent"}</span>
                         </div>
 
-                        <div className="bg-slate-950/80 border border-slate-800 rounded-lg px-3 py-1 text-[11px] font-mono text-slate-300">
-                          ALIGN REACTION & STANDARD
+                        <div className="bg-slate-950/80 border border-slate-800 rounded-lg px-2.5 sm:px-3 py-1 font-mono text-slate-300">
+                          ALIGN IN FRAME
                         </div>
                       </div>
 
                       {/* Alignment Guides */}
-                      <div className="absolute inset-0 pointer-events-none p-12 flex items-center justify-between gap-6">
+                      <div className="absolute inset-0 pointer-events-none p-4 sm:p-8 md:p-12 flex items-center justify-between gap-3 sm:gap-6">
                         {/* Reaction Well Guide (Left) */}
-                        <div className="w-1/2 h-4/5 border-2 border-dashed border-emerald-500/60 rounded-2xl flex flex-col items-center justify-between p-4 bg-emerald-500/5">
-                          <div className="text-[10px] font-mono text-emerald-400 uppercase tracking-wider bg-slate-950 px-2.5 py-0.5 rounded border border-emerald-500/40 font-semibold">
-                            Reaction Well (Sample)
+                        <div className="w-1/2 h-3/4 sm:h-4/5 border-2 border-dashed border-emerald-500/60 rounded-xl sm:rounded-2xl flex flex-col items-center justify-between p-2 sm:p-4 bg-emerald-500/5">
+                          <div className="text-[9px] sm:text-[10px] font-mono text-emerald-400 uppercase tracking-wider bg-slate-950 px-2 py-0.5 rounded border border-emerald-500/40 font-semibold truncate max-w-full">
+                            Reaction Well
                           </div>
-                          <div className="w-16 h-16 rounded-full border border-emerald-400/40 flex items-center justify-center text-emerald-400/40 text-lg">
+                          <div className="w-8 h-8 sm:w-16 sm:h-16 rounded-full border border-emerald-400/40 flex items-center justify-center text-emerald-400/40 text-base sm:text-lg">
                             +
                           </div>
-                          <div className="text-[10px] font-mono text-emerald-300/80 text-center">
-                            Place reagent tube / reaction well here
+                          <div className="text-[8px] sm:text-[10px] font-mono text-emerald-300/80 text-center leading-tight">
+                            Place reagent tube / sample
                           </div>
                         </div>
 
                         {/* Reference Card Guide (Right) */}
-                        <div className="w-1/2 h-4/5 border-2 border-dashed border-sky-500/60 rounded-2xl flex flex-col items-center justify-between p-4 bg-sky-500/5">
-                          <div className="text-[10px] font-mono text-sky-400 uppercase tracking-wider bg-slate-950 px-2.5 py-0.5 rounded border border-sky-500/40 font-semibold">
-                            Color Reference Standard
+                        <div className="w-1/2 h-3/4 sm:h-4/5 border-2 border-dashed border-sky-500/60 rounded-xl sm:rounded-2xl flex flex-col items-center justify-between p-2 sm:p-4 bg-sky-500/5">
+                          <div className="text-[9px] sm:text-[10px] font-mono text-sky-400 uppercase tracking-wider bg-slate-950 px-2 py-0.5 rounded border border-sky-500/40 font-semibold truncate max-w-full">
+                            Reference Card
                           </div>
                           <div className="grid grid-cols-3 gap-1 opacity-50">
-                            <div className="w-4 h-4 bg-white rounded-sm" />
-                            <div className="w-4 h-4 bg-[#767676] rounded-sm" />
-                            <div className="w-4 h-4 bg-red-500 rounded-sm" />
-                            <div className="w-4 h-4 bg-green-500 rounded-sm" />
-                            <div className="w-4 h-4 bg-blue-500 rounded-sm" />
-                            <div className="w-4 h-4 bg-black rounded-sm" />
+                            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-white rounded-xs" />
+                            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-[#767676] rounded-xs" />
+                            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-xs" />
+                            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-xs" />
+                            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-blue-500 rounded-xs" />
+                            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-black rounded-xs" />
                           </div>
-                          <div className="text-[10px] font-mono text-sky-300/80 text-center">
-                            Align calibration standard card
+                          <div className="text-[8px] sm:text-[10px] font-mono text-sky-300/80 text-center leading-tight">
+                            Align calibration standard
                           </div>
                         </div>
                       </div>
 
                       {/* Bottom Shutter Controls - Mobile Ergonomics */}
-                      <div className="absolute bottom-6 inset-x-0 flex items-center justify-center gap-6 z-20">
+                      <div className="absolute bottom-4 sm:bottom-6 inset-x-0 flex items-center justify-center gap-6 z-20">
                         <button
                           type="button"
                           onClick={handleCaptureSnapshot}
-                          className="w-18 h-18 rounded-full bg-slate-900/80 backdrop-blur-md p-1.5 shadow-2xl border-2 border-sky-400/80 flex items-center justify-center group tactile-btn"
+                          className="w-16 h-16 sm:w-20 sm:h-20 min-w-[64px] min-h-[64px] rounded-full bg-slate-900/80 backdrop-blur-md p-1.5 shadow-2xl border-2 border-sky-400/80 flex items-center justify-center group tactile-btn touch-target active:scale-90"
                           title="Capture Evidence Photo"
                           aria-label="Capture Evidence Photo"
                         >
                           <div className="w-full h-full rounded-full bg-gradient-to-tr from-sky-500 to-cyan-400 group-hover:from-sky-400 group-hover:to-cyan-300 transition-colors flex items-center justify-center shadow-lg shadow-sky-500/30">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-slate-950">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 sm:w-8 sm:h-8 text-slate-950">
                               <path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" />
                               <path fillRule="evenodd" d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 01-3 3h-15a3 3 0 01-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 001.11-.71l.822-1.315a2.75 2.75 0 012.332-1.39zM6.75 12.75a5.25 5.25 0 1110.5 0 5.25 5.25 0 01-10.5 0zm12-1.5a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
                             </svg>

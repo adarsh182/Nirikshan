@@ -33,6 +33,53 @@ app = FastAPI(
 )
 
 
+# Web distribution directory for embedded production build
+web_dist = Path("/app/web_dist")
+if not web_dist.exists():
+    web_dist = Path(__file__).resolve().parent.parent.parent / "web" / "dist"
+
+
+@app.middleware("http")
+async def spa_navigation_middleware(request: Request, call_next):
+    if request.method in ("GET", "HEAD") and web_dist.exists():
+        path = request.url.path
+        # Do not intercept API, docs, static assets, images, or health endpoints
+        if not (
+            path.startswith("/api")
+            or path.startswith("/assets")
+            or path.startswith("/docs")
+            or path.startswith("/redoc")
+            or path.endswith("/image")
+            or path in ("/openapi.json", "/health", "/ready", "/favicon.ico", "/favicon.svg")
+        ):
+            # Check if requesting an existing static file from web_dist
+            target_file = web_dist / path.lstrip("/")
+            if path != "/" and target_file.is_file():
+                return FileResponse(target_file)
+
+            # Check if this is a browser document navigation requesting an HTML page
+            accept = request.headers.get("accept", "")
+            sec_fetch_dest = request.headers.get("sec-fetch-dest", "")
+            sec_fetch_mode = request.headers.get("sec-fetch-mode", "")
+
+            is_browser_nav = (
+                sec_fetch_dest == "document"
+                or sec_fetch_mode == "navigate"
+                or ("text/html" in accept and "application/json" not in accept)
+            )
+
+            if is_browser_nav:
+                index_file = web_dist / "index.html"
+                if index_file.exists():
+                    return FileResponse(
+                        index_file,
+                        media_type="text/html",
+                        headers={"Cache-Control": "no-cache, must-revalidate"},
+                    )
+
+    return await call_next(request)
+
+
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     start_time = time.perf_counter()
@@ -50,6 +97,7 @@ async def add_security_headers(request: Request, call_next):
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     return response
+
 
 
 origins = settings.cors_origin_list
@@ -93,10 +141,6 @@ app.include_router(api_router)
 
 
 # Serve production React Web build when packaged into container
-web_dist = Path("/app/web_dist")
-if not web_dist.exists():
-    web_dist = Path(__file__).resolve().parent.parent.parent / "web" / "dist"
-
 if web_dist.exists():
     assets_dir = web_dist / "assets"
     if assets_dir.exists():
