@@ -26,7 +26,9 @@ backend/models/*.joblib
 # IDE
 .idea/
 .vscode/
+.cursor/
 *.swp
+*.plan.md
 
 # OS
 .DS_Store
@@ -37,8 +39,15 @@ Thumbs.db
 
 # Agent files & internal plans
 .agents/
+agents
 plans/
 AGENTS.md
+CLAUDE.md
+.cursorrules
+.windsurfrules
 CONSTRAINTS.md
 skills-lock.json
 debug_crop*.png
+brag-output*/
+setup-agent-skills.sh
+
